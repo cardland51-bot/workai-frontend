@@ -1,5 +1,4 @@
-const API_BASE = "http://localhost:10000"; // change to your Render backend URL
-
+const API_BASE = "https://workai-backend.onrender.com";
 document.addEventListener("DOMContentLoaded", () => {
   const modeButtons = document.querySelectorAll(".mode-btn");
   const scopeInput = document.getElementById("scopeType");
