@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>WorkAI • My Work Hub</title>
+  <link rel="stylesheet" href="assets/css/style.css" />
+</head>
+<body class="hub">
+  <header class="top-bar">
+    <div class="logo">Work<span>AI</span></div>
+    <div class="lang-toggle">
+      <button data-lang="en" class="active">EN</button>
+      <button data-lang="es">ES</button>
+    </div>
+  </header>
+
+  <main class="hub-main">
+    <section class="intro">
+      <h1 data-i18n-key="hubTitle">Hey boss, time to share your wins.</h1>
+      <p data-i18n-key="hubDesc">
+        Upload photos or a short walk-around video, tell us what you charged, and we’ll turn it into a Smart Report to guide your next quote.
+      </p>
+    </section>
+
+    <section class="upload-card">
+      <h2 data-i18n-key="chooseMode">Choose how you want to capture this job:</h2>
+      <div class="modes">
+        <button class="mode-btn active" data-mode="snapshot" data-i18n-key="snapshotMode">
+          Snapshot Job (fits in one frame)
+        </button>
+        <button class="mode-btn" data-mode="walkaround" data-i18n-key="walkMode">
+          Walkaround Job (full scope with context)
+        </button>
+      </div>
+
+      <form id="jobForm">
+        <label data-i18n-key="mediaLabel">Upload photo or video:</label>
+        <input type="file" name="media" accept="image/*,video/*" required />
+
+        <label data-i18n-key="priceLabel">What did you charge for this job? (USD)</label>
+        <input type="number" name="price" min="0" step="1" required />
+
+        <label data-i18n-key="descLabel">
+          In one paragraph, describe what you did and how long it took. Talk like you're explaining it to another pro.
+        </label>
+        <textarea name="description" rows="4" required></textarea>
+
+        <input type="hidden" name="scopeType" id="scopeType" value="snapshot" />
+
+        <button type="submit" class="cta-btn" data-i18n-key="submitJob">
+          Generate My Smart Report
+        </button>
+      </form>
+
+      <div id="result" class="result"></div>
+    </section>
+
+    <section class="history">
+      <h2 data-i18n-key="recentJobs">Recent jobs you've logged</h2>
+      <div id="jobsList" class="jobs-list"></div>
+    </section>
+  </main>
+
+  <script src="assets/js/lang.js"></script>
+  <script src="assets/js/main.js"></script>
+</body>
+</html>
