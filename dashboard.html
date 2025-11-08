@@ -1,10 +1,161 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>WorkAI • My Work Hub</title>
-  <link rel="stylesheet" href="assets/css/style.css" />
+  <meta name="description" content="Snap a job, tell us the ticket, get a screenshot-safe Smart Report tuned for real operators." />
+  <style>
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, -sans-serif;
+      background: #f5f5f7;
+      color: #111827;
+    }
+    .hub-shell {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 20px 16px 32px;
+    }
+    .hub-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+    .hub-brand {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+    .orb {
+      width: 18px;
+      height: 18px;
+      border-radius: 999px;
+      background: linear-gradient(135deg,#22c55e,#38bdf8);
+      box-shadow: 0 0 10px rgba(34,197,94,0.6);
+    }
+    .hub-title {
+      font-weight: 600;
+      font-size: 16px;
+    }
+    .hub-sub {
+      font-size: 11px;
+      color: #6b7280;
+    }
+    .hub-status {
+      font-size: 10px;
+      color: #16a34a;
+      white-space: nowrap;
+    }
+    .hub-grid {
+      display: grid;
+      grid-template-columns: minmax(0,2fr) minmax(220px,1.2fr);
+      gap: 18px;
+      align-items: flex-start;
+    }
+    .capture-btn,
+    .submit-btn {
+      width: 100%;
+      padding: 10px 14px;
+      border-radius: 999px;
+      border: none;
+      font-weight: 600;
+      cursor: pointer;
+      margin-bottom: 8px;
+      font-size: 13px;
+      background: #111827;
+      color: #f9fafb;
+    }
+    .capture-btn {
+      background: #22c55e;
+      color: #022c22;
+    }
+    .capture-btn:hover,
+    .submit-btn:hover {
+      opacity: 0.92;
+    }
+    .thumb-strip {
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      padding: 4px 0;
+      margin-bottom: 8px;
+    }
+    .thumb-strip img,
+    .thumb-strip video {
+      height: 56px;
+      border-radius: 10px;
+      object-fit: cover;
+      flex-shrink: 0;
+    }
+    .field-row {
+      margin-bottom: 8px;
+      font-size: 11px;
+    }
+    .field-row label {
+      display: block;
+      margin-bottom: 2px;
+      color: #6b7280;
+    }
+    .field-row input,
+    .field-row select {
+      width: 100%;
+      padding: 6px 8px;
+      border-radius: 8px;
+      border: 1px solid #d1d5db;
+      font-size: 12px;
+      outline: none;
+    }
+    .field-row input:focus,
+    .field-row select:focus {
+      border-color: #22c55e;
+      box-shadow: 0 0 0 1px rgba(34,197,94,0.18);
+    }
+    .report-card {
+      margin-top: 10px;
+      padding: 10px;
+      border-radius: 10px;
+      border: 1px solid #e5e7eb;
+      font-size: 11px;
+      background: #ffffff;
+    }
+    .report-label {
+      font-size: 9px;
+      text-transform: uppercase;
+      letter-spacing: .14em;
+      color: #9ca3af;
+      margin-bottom: 4px;
+    }
+    .jobs-list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      font-size: 10px;
+    }
+    .job-item {
+      padding: 6px 8px;
+      border-radius: 8px;
+      border: 1px solid #e5e7eb;
+      background: #ffffff;
+    }
+    .job-item strong {
+      font-size: 11px;
+    }
+    @media (max-width: 720px) {
+      .hub-grid {
+        grid-template-columns: 1fr;
+      }
+      .hub-header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .hub-status {
+        align-self: flex-start;
+      }
+    }
+  </style>
 </head>
 <body>
   <main class="hub-shell">
@@ -13,15 +164,15 @@
         <div class="orb"></div>
         <div>
           <div class="hub-title">WorkAI Hub</div>
-          <div class="hub-sub">Snap → Tell us the ticket → Get a Smart Report</div>
+          <div class="hub-sub">Snap the job → Tell us the ticket → Get a Smart Report.</div>
         </div>
       </div>
-      <div class="hub-status">Alpha · Screenshot-safe · No bullshit</div>
+      <div class="hub-status">Alpha · Screenshot-safe · Built for real operators</div>
     </header>
 
     <section class="hub-grid">
-      <!-- LEFT: Capture & Smart Report -->
-      <div class="hub-left">
+      <!-- LEFT: Snap → Inputs → Smart Report -->
+      <div>
         <button id="captureJobBtn" class="capture-btn">
           📸 Capture job & open camera
         </button>
@@ -38,21 +189,21 @@
         <div id="thumbStrip" class="thumb-strip"></div>
 
         <div class="field-row">
-          <label>What did you charge? (USD)</label>
+          <label for="priceInput">What did you charge? (USD)</label>
           <input type="number" id="priceInput" placeholder="e.g. 480" />
         </div>
 
         <div class="field-row">
-          <label>Quick description</label>
+          <label for="descInput">Quick description</label>
           <input
             type="text"
             id="descInput"
-            placeholder="e.g. Mulch + edge, front beds only"
+            placeholder="e.g. mow + trim + blow, front & back"
           />
         </div>
 
         <div class="field-row">
-          <label>Scope type</label>
+          <label for="scopeType">Scope type</label>
           <select id="scopeType">
             <option value="snapshot">Snapshot (fits in frame)</option>
             <option value="walkaround">Walkaround (full property)</option>
@@ -63,18 +214,21 @@
           Get Smart Report
         </button>
 
-        <div id="smartReport" class="report-card" style="display:none;"></div>
+        <div id="smartReport" class="report-card" style="display:none;">
+          <!-- Filled by JS -->
+        </div>
       </div>
 
       <!-- RIGHT: Recent jobs -->
-      <aside class="hub-right">
-        <h2 class="side-title">Recent reads</h2>
-        <div id="jobsList" class="jobs-list"></div>
+      <aside>
+        <h2 style="font-size:12px; margin:0 0 6px;">Recent reads</h2>
+        <div id="jobsList" class="jobs-list">
+          <!-- Filled by JS -->
+        </div>
       </aside>
     </section>
   </main>
 
   <script src="assets/js/main.js"></script>
 </body>
-
 </html>
