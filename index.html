@@ -3,34 +3,34 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-  <title>Cardinal Calculator • Watch the Build. Test the Brain.</title>
-  <meta name="description" content="Upload ➜ Analyze ➜ Send. A live-in-public lawn & landscape intelligence tool built for pros and homeowners." />
+  <title>WorkAI • Capture. Explain. Charge Right.</title>
+  <meta name="description" content="WorkAI turns real job photos and quick descriptions into smarter pricing signals for contractors." />
   <style>
     :root {
       /* LIGHT THEME (default) */
       --bg: #f5fbf6;
       --panel: #ffffff;
-      --accent: #35d29a;
-      --accent-soft: rgba(53,210,154,0.14);
+      --accent: #22c55e;
+      --accent-soft: rgba(34,197,94,0.14);
       --text: #020817;
-      --muted: #6b7280;
-      --border: rgba(15,23,42,0.10);
-      --warn: #f6bf3a;
+      --muted: #64748b;
+      --border: rgba(148,163,253,0.18);
+      --warn: #f97316;
       --shadow-soft: 0 12px 40px rgba(15,23,42,0.12);
-      --shell-border-radius: 26px;
+      --shell-radius: 26px;
     }
 
     body[data-theme="dark"] {
-      --bg:#070b0a;
-      --panel:#101614;
-      --accent:#35d29a;
-      --accent-soft:rgba(53,210,154,0.18);
-      --text:#f5fbf6;
-      --muted:#9fb3a8;
-      --border:rgba(245,251,246,0.12);
-      --warn:#f6bf3a;
-      --shadow-soft:0 22px 80px rgba(0,0,0,0.72);
-      --shell-border-radius:28px;
+      --bg:#020817;
+      --panel:#020817;
+      --accent:#22c55e;
+      --accent-soft:rgba(34,197,94,0.18);
+      --text:#e5e7eb;
+      --muted:#9ca3af;
+      --border:rgba(75,85,99,0.9);
+      --warn:#facc15;
+      --shadow-soft:0 22px 70px rgba(0,0,0,0.9);
+      --shell-radius:28px;
     }
 
     * {
@@ -40,14 +40,14 @@
     }
 
     body {
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text", -sans-serif;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, -sans-serif;
       min-height:100vh;
       display:flex;
       justify-content:center;
       padding:32px 18px 40px;
       background:
-        radial-gradient(circle at top left, rgba(53,210,154,0.10), transparent 55%),
-        radial-gradient(circle at top right, rgba(111,196,255,0.06), transparent 55%),
+        radial-gradient(circle at top left, rgba(34,197,94,0.10), transparent 55%),
+        radial-gradient(circle at top right, rgba(56,189,248,0.06), transparent 55%),
         var(--bg);
       color:var(--text);
       transition: background .25s ease, color .25s ease;
@@ -56,17 +56,17 @@
     .shell {
       width:100%;
       max-width:1120px;
-      border-radius:var(--shell-border-radius);
+      border-radius:var(--shell-radius);
       padding:26px 22px 22px;
       border:1px solid var(--border);
       background:
-        radial-gradient(circle at top, rgba(255,255,255,0.04), transparent 78%)
+        radial-gradient(circle at top, rgba(255,255,255,0.06), transparent 78%)
         var(--panel);
       box-shadow:var(--shadow-soft);
       display:flex;
       flex-direction:column;
       gap:22px;
-      transition: background .25s ease, box-shadow .25s ease, border-color .25s ease;
+      transition: all .25s ease;
     }
 
     .top-row {
@@ -87,13 +87,18 @@
       height:22px;
       border-radius:999px;
       background:radial-gradient(circle at 30% 0, #ffffff, var(--accent));
-      box-shadow:0 0 14px rgba(53,210,154,0.9);
+      box-shadow:0 0 14px rgba(34,197,94,0.9);
     }
 
     .brand-text {
       font-size:14px;
-      letter-spacing:.08em;
+      letter-spacing:.10em;
       text-transform:uppercase;
+      color:var(--muted);
+    }
+
+    .brand-sub {
+      font-size:10px;
       color:var(--muted);
     }
 
@@ -103,10 +108,10 @@
       gap:6px;
       padding:4px 10px;
       border-radius:999px;
-      background:rgba(246,191,58,0.06);
-      border:1px solid rgba(246,191,58,0.28);
-      font-size:10px;
-      color:var(--warn);
+      background:rgba(22,163,74,0.06);
+      border:1px solid rgba(22,163,74,0.32);
+      font-size:9px;
+      color:var(--accent);
       text-transform:uppercase;
       letter-spacing:.13em;
       white-space:nowrap;
@@ -116,8 +121,8 @@
       width:7px;
       height:7px;
       border-radius:999px;
-      background:var(--warn);
-      box-shadow:0 0 10px var(--warn);
+      background:var(--accent);
+      box-shadow:0 0 10px var(--accent);
     }
 
     .top-right {
@@ -130,18 +135,18 @@
       padding:4px 10px;
       border-radius:999px;
       border:1px solid var(--border);
-      background:rgba(255,255,255,0.8);
+      background:rgba(255,255,255,0.96);
       color:#111827;
       font-size:9px;
       display:inline-flex;
       align-items:center;
       gap:6px;
       cursor:pointer;
-      transition:all .2s ease;
+      transition:all .18s ease;
     }
 
     body[data-theme="dark"] .mode-toggle {
-      background:rgba(3,7,6,0.96);
+      background:rgba(3,7,6,1);
       color:var(--muted);
     }
 
@@ -175,7 +180,7 @@
     .hero-body {
       font-size:13px;
       color:var(--muted);
-      max-width:460px;
+      max-width:480px;
       margin-bottom:14px;
     }
 
@@ -183,7 +188,7 @@
       display:flex;
       flex-wrap:wrap;
       gap:10px;
-      margin-bottom:12px;
+      margin-bottom:10px;
     }
 
     .btn {
@@ -201,25 +206,25 @@
     }
 
     .btn-primary {
-      background:linear-gradient(90deg, var(--accent), #42e3ff);
-      color:#020403;
+      background:linear-gradient(90deg, var(--accent), #38bdf8);
+      color:#020817;
       font-weight:600;
-      box-shadow:0 10px 24px rgba(15,23,42,0.35);
+      box-shadow:0 10px 24px rgba(15,23,42,0.28);
     }
 
     .btn-primary:hover {
       transform:translateY(-1px);
-      box-shadow:0 14px 34px rgba(15,23,42,0.45);
+      box-shadow:0 14px 34px rgba(15,23,42,0.42);
     }
 
     .btn-ghost {
       border-color:var(--border);
       color:var(--muted);
-      background:rgba(255,255,255,0.4);
+      background:rgba(255,255,255,0.86);
     }
 
     body[data-theme="dark"] .btn-ghost {
-      background:rgba(3,6,5,0.88);
+      background:rgba(3,6,5,0.96);
     }
 
     .btn-ghost span.icon {
@@ -247,15 +252,15 @@
     .steps span {
       padding:4px 8px;
       border-radius:999px;
-      border:1px solid rgba(148,163,253,0.18);
-      background:rgba(255,255,255,0.7);
+      border:1px solid rgba(148,163,253,0.2);
+      background:rgba(255,255,255,0.9);
       color:#111827;
     }
 
     body[data-theme="dark"] .steps span {
       background:rgba(0,0,0,0.38);
       color:var(--muted);
-      border-color:rgba(245,251,246,0.12);
+      border-color:rgba(75,85,99,0.9);
     }
 
     .right-panel {
@@ -268,7 +273,7 @@
       flex-direction:column;
       gap:10px;
       overflow:hidden;
-      transition:background .25s ease, border-color .25s ease;
+      transition:all .25s ease;
     }
 
     .rp-label {
@@ -294,21 +299,21 @@
     .rp-pill {
       padding:4px 7px;
       border-radius:999px;
-      border:1px solid rgba(148,163,253,0.18);
+      border:1px solid rgba(148,163,253,0.2);
       color:var(--muted);
-      background:rgba(255,255,255,0.7);
+      background:rgba(255,255,255,0.9);
     }
 
     body[data-theme="dark"] .rp-pill {
-      background:rgba(0,0,0,0.72);
-      border-color:rgba(245,251,246,0.16);
+      background:rgba(0,0,0,0.78);
+      border-color:rgba(148,163,253,0.26);
     }
 
     .fake-screen {
       margin-top:4px;
       padding:7px;
       border-radius:12px;
-      background:rgba(249,250,251,0.98);
+      background:rgba(249,250,251,0.99);
       border:1px solid rgba(226,232,240,0.9);
       display:flex;
       flex-direction:column;
@@ -318,8 +323,8 @@
     }
 
     body[data-theme="dark"] .fake-screen {
-      background:rgba(0,0,0,0.88);
-      border-color:rgba(245,251,246,0.14);
+      background:rgba(0,0,0,0.9);
+      border-color:rgba(75,85,99,0.9);
       color:var(--muted);
     }
 
@@ -346,7 +351,7 @@
     }
 
     body[data-theme="dark"] .fake-tag {
-      border-color:rgba(245,251,246,0.16);
+      border-color:rgba(148,163,253,0.32);
       color:var(--muted);
     }
 
@@ -354,15 +359,15 @@
       width:100%;
       height:5px;
       border-radius:999px;
-      background:rgba(148,163,253,0.18);
+      background:rgba(148,163,253,0.14);
       overflow:hidden;
     }
 
     .bar-fill {
-      width:68%;
+      width:72%;
       height:100%;
       border-radius:999px;
-      background:linear-gradient(90deg, var(--accent), #42e3ff);
+      background:linear-gradient(90deg, var(--accent), #38bdf8);
     }
 
     .tape {
@@ -373,24 +378,24 @@
       letter-spacing:.16em;
       background:repeating-linear-gradient(
         -45deg,
-        rgba(246,191,58,0.12) 0 8px,
-        rgba(246,191,58,0.32) 8px 16px
+        rgba(34,197,94,0.06) 0 8px,
+        rgba(34,197,94,0.18) 8px 16px
       );
       color:#111827;
       text-align:center;
       border-radius:14px;
       border:1px solid rgba(148,163,253,0.22);
-      box-shadow:0 8px 22px rgba(15,23,42,0.22);
+      box-shadow:0 8px 18px rgba(15,23,42,0.18);
     }
 
     body[data-theme="dark"] .tape {
-      color:#fdf7e3;
+      color:#bbf7d0;
       border-color:rgba(0,0,0,0.9);
-      box-shadow:0 8px 22px rgba(0,0,0,0.82);
+      box-shadow:0 8px 22px rgba(0,0,0,0.9);
       background:repeating-linear-gradient(
         -45deg,
-        rgba(246,191,58,0.16) 0 8px,
-        rgba(246,191,58,0.42) 8px 16px
+        rgba(34,197,94,0.14) 0 8px,
+        rgba(34,197,94,0.32) 8px 16px
       );
     }
 
@@ -414,7 +419,8 @@
       <div class="brand-lockup">
         <div class="brand-orb"></div>
         <div>
-          <div class="brand-text">Cardinal Calculator</div>
+          <div class="brand-text">WorkAI</div>
+          <div class="brand-sub">Work ➜ AI ➜ Smart Ticket</div>
         </div>
       </div>
       <div class="top-right">
@@ -433,78 +439,79 @@
       <!-- LEFT: Copy & CTAs -->
       <div>
         <h1 class="hero-title">
-          Upload a yard. <span class="hero-highlight">Watch our AI think.</span><br>
-          You’re early—see the real build.
+          Upload your work. <span class="hero-highlight">Watch WorkAI price it like the other guy.</span><br>
+          Keep your margin. Keep your dignity.
         </h1>
         <p class="hero-body">
-          This isn’t a fake demo. Cardinal’s lawn & landscape brain is being wired in the open.
-          Tap in, try to break it, send feedback, and help shape the tool that will price, scope,
-          and script the next wave of lawn pros.
+          WorkAI is a simple widget for small operators. Drop a job photo or quick walk-through,
+          add the price you charged, and we return a Smart Report with a price band, upsell window,
+          and how you stack against “the other guy” — without racing to the bottom.
         </p>
 
         <div class="cta-row">
-          <!-- Point this at your live hub / analyzer -->
           <a href="dashboard.html" class="btn btn-primary">
-            Launch Analyzer
+            Launch Work Hub
             <span>↗</span>
           </a>
-          <!-- Or docs / behind-the-scenes -->
-          <a href="pro/docs/" class="btn btn-ghost">
+          <a href="#how-it-works" class="btn btn-ghost">
             <span class="icon"></span>
-            Peek under the hood
+            See how it fits your day
           </a>
         </div>
 
         <div class="microcopy">
-          No accounts. No credit card. Alpha signals only. Expect glitches. Tell us where it breaks.
+          No login wall in alpha. No credit card. Just signal: upload a few real jobs, get real feedback.
         </div>
 
-        <div class="steps">
-          <span>① Drop a lawn photo</span>
-          <span>② Get a smart price band</span>
-          <span>③ See risk / upsell signals</span>
-          <span>④ Export & test in the field</span>
+        <div class="steps" id="how-it-works">
+          <span>① Snap a job (photo or short video)</span>
+          <span>② Tell us what you charged</span>
+          <span>③ WorkAI returns a smart band</span>
+          <span>④ We quietly learn your lane</span>
         </div>
       </div>
 
-      <!-- RIGHT: Fake analyzer preview & tape -->
+      <!-- RIGHT: Live-ish Smart Report teaser -->
       <aside class="right-panel">
         <div>
-          <div class="rp-label">Live Preview</div>
-          <div class="rp-title">Cardinal Lawn Intelligence v0.1</div>
+          <div class="rp-label">Smart Report Preview</div>
+          <div class="rp-title">WorkAI · Small Job Widget</div>
           <div class="rp-pillrow">
-            <div class="rp-pill">Vision channel ready</div>
-            <div class="rp-pill">Price band: Fair</div>
-            <div class="rp-pill">Risk lens: On</div>
-            <div class="rp-pill">Upsell coach: Warming up</div>
+            <div class="rp-pill">Snapshot & Walkaround modes</div>
+            <div class="rp-pill">Audio-aware (soon)</div>
+            <div class="rp-pill">No middleman</div>
           </div>
         </div>
 
         <div class="fake-screen">
-          <div class="fake-label">Sample Read</div>
+          <div class="fake-label">Example from your crew</div>
           <div class="fake-row">
-            <span>Backyard • 9,800 sq ft • Mixed health</span>
-            <span class="fake-tag">Alpha Output</span>
+            <span>Mulch + Edge • 3 hrs • Single crew</span>
+            <span class="fake-tag">Operator upload</span>
           </div>
           <div class="fake-row">
-            <span>Suggested band:</span>
-            <strong>$145 – $190</strong>
+            <span>You charged:</span>
+            <strong>$480</strong>
           </div>
           <div class="fake-row">
-            <span>Risk (callbacks / complaints)</span>
-            <span>32%</span>
+            <span>WorkAI band:</span>
+            <strong>$450 – $525</strong>
+          </div>
+          <div class="fake-row">
+            <span>Upsell window:</span>
+            <span>+12–18% w/ haul-away + crisp edge</span>
           </div>
           <div class="bar-wrap">
             <div class="bar-fill"></div>
           </div>
           <div class="fake-row">
-            <span>Upsell window</span>
-            <span>Core aeration • Bed edge • Weed control</span>
+            <span>Notes:</span>
+            <span>Messaging & photos support your price. You’re not “too high”.</span>
           </div>
         </div>
 
         <div class="tape">
-          UNDER CONSTRUCTION · YOU ARE LITERALLY WATCHING THE REAL BUILD · NOT MARKETING FOOTAGE
+          REAL INPUTS • REAL OPERATORS • WEAPONIZED CONFIDENCE, NOT CHEAP QUOTES
         </div>
       </aside>
     </section>
@@ -515,7 +522,7 @@
       const body = document.body;
       const toggle = document.getElementById("modeToggle");
       const label = document.getElementById("modeLabel");
-      const saved = localStorage.getItem("cc-theme");
+      const saved = localStorage.getItem("workai-theme");
 
       if (saved === "dark") {
         body.setAttribute("data-theme", "dark");
@@ -527,7 +534,7 @@
           const current = body.getAttribute("data-theme") || "light";
           const next = current === "light" ? "dark" : "light";
           body.setAttribute("data-theme", next);
-          localStorage.setItem("cc-theme", next);
+          localStorage.setItem("workai-theme", next);
           if (label) label.textContent = next === "dark" ? "NIGHT MODE" : "DAY MODE";
         });
       }
@@ -536,6 +543,3 @@
 </body>
 </html>
 
-  <script src="assets/js/lang.js"></script>
-</body>
-</html>
