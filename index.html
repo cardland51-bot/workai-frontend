@@ -791,23 +791,29 @@
         </p>
 
         <div class="cta-row">
-          <div class="camera-orb-wrap">
-            <div class="camera-orb-row">
-              <div class="camera-orb" id="btnCamera">
-                <div class="camera-orb-ring"></div>
-                <div class="camera-orb-inner"></div>
-              </div>
-              <button class="btn-upload" id="btnUpload">
-                <span class="btn-upload-dot"></span>
-                Use photos from my library
-              </button>
-            </div>
-            <div class="camera-orb-label">
-              One button. We’ll calibrate you on a sample job, then let you snap or upload
-              your own. No photos stay here until you send.
-            </div>
-          </div>
-        </div>
+  <!-- Primary: open camera / picker -->
+  <button id="openCameraBtn" class="btn btn-primary" type="button">
+    <span>📷</span>
+    Open WorkAI Camera
+  </button>
+
+  <!-- Secondary: explain / peek -->
+  <a href="#how-it-works" class="btn btn-ghost">
+    <span class="icon"></span>
+    Peek under the hood
+  </a>
+</div>
+
+<!-- Hidden input used to trigger device camera or library -->
+<input
+  id="landingMediaInput"
+  type="file"
+  accept="image/*,video/*"
+  capture="environment"
+  multiple
+  style="display:none"
+/>
+
 
         <div class="microcopy" data-i18n-key="microcopy">
           First hit: we run an Initial Dynamic Expectation Calibration using our own sample job.
