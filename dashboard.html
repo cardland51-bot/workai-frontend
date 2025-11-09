@@ -1,201 +1,703 @@
-const API_BASE = "https://workai-backend.onrender.com";
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>WorkAI • Work Hub & Ticket Deck</title>
+  <meta name="description" content="WorkAI Hub turns each job photo into a clean, screenshot-safe ticket: band, notes, and a simple path to send to your customer." />
 
-// --- DOM HOOKS ---
-const captureBtn = document.getElementById("captureJobBtn");
-const mediaInput = document.getElementById("mediaInput");
-const thumbStrip = document.getElementById("thumbStrip");
-const priceInput = document.getElementById("priceInput");
-const descInput = document.getElementById("descInput");
-const scopeType = document.getElementById("scopeType");
-const smartReportBtn = document.getElementById("smartReportBtn");
-const smartReport = document.getElementById("smartReport");
-const jobsList = document.getElementById("jobsList");
-
-// --- 1. SEED FROM LANDING (sessionStorage) ---
-(function seedFromLanding() {
-  if (!thumbStrip) return;
-  try {
-    const listRaw = sessionStorage.getItem("workai-initial-media-list");
-    const single = sessionStorage.getItem("workai-initial-media");
-    const urls = listRaw ? JSON.parse(listRaw) : (single ? [single] : []);
-    if (!urls || !urls.length) return;
-
-    thumbStrip.innerHTML = "";
-    urls.forEach((src) => {
-      const isVideo = src.startsWith("data:video");
-      const el = document.createElement(isVideo ? "video" : "img");
-      el.src = src;
-      el.className = "thumb";
-      if (isVideo) {
-        el.muted = true;
-        el.playsInline = true;
-      }
-      thumbStrip.appendChild(el);
-    });
-  } catch (e) {
-    console.warn("No initial media from landing.", e);
-  }
-})();
-
-// --- 2. CAPTURE / PICK MEDIA IN HUB ---
-if (captureBtn && mediaInput) {
-  captureBtn.addEventListener("click", () => mediaInput.click());
-
-  mediaInput.addEventListener("change", () => {
-    if (!thumbStrip) return;
-    thumbStrip.innerHTML = "";
-    Array.from(mediaInput.files).forEach((file) => {
-      const url = URL.createObjectURL(file);
-      const isVideo = file.type.startsWith("video/");
-      const el = document.createElement(isVideo ? "video" : "img");
-      el.src = url;
-      el.className = "thumb";
-      if (isVideo) {
-        el.muted = true;
-        el.playsInline = true;
-      }
-      thumbStrip.appendChild(el);
-    });
-  });
-}
-
-// --- 3. SEND TO BACKEND FOR REAL BAND ---
-if (smartReportBtn) {
-  smartReportBtn.addEventListener("click", async () => {
-    if (!mediaInput.files.length) {
-      alert("Add at least one photo or short video of the job first.");
-      return;
-    }
-    const price = (priceInput?.value || "").trim();
-    const description = (descInput?.value || "").trim();
-    const scope = (scopeType?.value || "snapshot").trim();
-
-    if (!price || !description) {
-      alert("Add what you charged and a quick description so we’re not guessing.");
-      return;
+  <style>
+    :root {
+      --bg: #f3f4f6;
+      --panel: #ffffff;
+      --accent: #22c55e;
+      --accent-alt: #38bdf8;
+      --accent-soft: rgba(34,197,94,0.12);
+      --text: #020817;
+      --muted: #6b7280;
+      --border-soft: #e5e7eb;
+      --border-strong: rgba(148,163,253,0.4);
+      --shadow-soft: 0 14px 32px rgba(15,23,42,0.16);
+      --radius-shell: 22px;
+      --radius-card: 16px;
+      --font-xs: 9px;
+      --font-xxs: 7px;
     }
 
-    const fd = new FormData();
-    fd.append("media", mediaInput.files[0]); // first file = main handle
-    fd.append("price", price);
-    fd.append("description", description);
-    fd.append("scopeType", scope);
-
-    smartReportBtn.disabled = true;
-    smartReportBtn.textContent = "Thinking…";
-
-    if (smartReport) {
-      smartReport.style.display = "none";
-      smartReport.innerHTML = "";
+    [data-theme="dark"] {
+      --bg: #020817;
+      --panel: #020817;
+      --text: #e5e7eb;
+      --muted: #9ca3af;
+      --border-soft: #111827;
+      --border-strong: rgba(75,85,99,0.9);
+      --shadow-soft: 0 24px 70px rgba(0,0,0,0.96);
     }
 
-    try {
-      const res = await fetch(`${API_BASE}/api/jobs/upload`, {
-        method: "POST",
-        body: fd
-      });
-
-      if (!res.ok) {
-        console.error("Upload failed:", res.status, await res.text().catch(() => ""));
-        throw new Error("Upload failed");
-      }
-
-      const job = await res.json();
-
-      // Expect backend to give us:
-      // price, scopeType, description,
-      // aiLow, aiHigh, upsellPotential, notes,
-      // materialsSummary, laborSummary (optional)
-      const aiLow = job.aiLow ?? job.bandLow ?? "";
-      const aiHigh = job.aiHigh ?? job.bandHigh ?? "";
-      const upsell = job.upsellPotential ?? "";
-      const notes = job.notes ?? "Field note not available.";
-      const mat = job.materialsSummary ?? "";
-      const labor = job.laborSummary ?? "";
-
-      if (smartReport) {
-        smartReport.innerHTML = `
-          <div class="report-label">Smart report</div>
-          <div><strong>Band:</strong> ${
-            aiLow && aiHigh ? `$${aiLow} – $${aiHigh}` : "Pending / not returned"
-          }</div>
-          ${
-            mat
-              ? `<div><strong>Materials (est):</strong> ${mat}</div>`
-              : ""
-          }
-          ${
-            labor
-              ? `<div><strong>Time / crew (est):</strong> ${labor}</div>`
-              : ""
-          }
-          ${
-            upsell !== ""
-              ? `<div><strong>Upsell lane (signal only):</strong> ${upsell}%</div>`
-              : ""
-          }
-          <div><strong>Read:</strong> ${notes}</div>
-        `;
-        smartReport.style.display = "flex";
-      }
-
-      // Append to jobs list
-      if (jobsList) {
-        const item = document.createElement("div");
-        item.className = "job-item";
-        item.innerHTML = `
-          <div><strong>$${job.price ?? price}</strong> • ${job.scopeType ?? scope}</div>
-          <div>${job.description ?? description}</div>
-          <div>
-            <span class="label">Band:</span>
-            ${
-              aiLow && aiHigh
-                ? `$${aiLow}–$${aiHigh}`
-                : "n/a"
-            }
-          </div>
-        `;
-        jobsList.prepend(item);
-      }
-    } catch (err) {
-      console.error(err);
-      alert("Something glitched on the band. Check backend URL / logs and try again.");
-    } finally {
-      smartReportBtn.disabled = false;
-      smartReportBtn.textContent = "Get Smart Band & field note ↗";
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
     }
-  });
-}
 
-// --- 4. LOAD EXISTING JOBS ON ENTRY (optional) ---
-(async function loadJobs() {
-  if (!jobsList) return;
-  try {
-    const res = await fetch(`${API_BASE}/api/jobs/list`);
-    if (!res.ok) return;
-    const jobs = await res.json();
-    if (!Array.isArray(jobs)) return;
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, -sans-serif;
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at top left, rgba(34,197,94,0.09), transparent 55%),
+        radial-gradient(circle at top right, rgba(56,189,248,0.05), transparent 55%),
+        var(--bg);
+      color: var(--text);
+      display: flex;
+      justify-content: center;
+      padding: 14px 6px 18px;
+    }
 
-    jobs.slice().reverse().forEach((job) => {
-      const aiLow = job.aiLow ?? job.bandLow;
-      const aiHigh = job.aiHigh ?? job.bandHigh;
-      const item = document.createElement("div");
-      item.className = "job-item";
-      item.innerHTML = `
-        <div><strong>$${job.price ?? "—"}</strong> • ${job.scopeType ?? "snapshot"}</div>
-        <div>${job.description ?? ""}</div>
-        <div>
-          <span class="label">Band:</span>
-          ${
-            aiLow && aiHigh
-              ? `$${aiLow}–$${aiHigh}`
-              : "pending"
-          }
+    .hub-shell {
+      width: 100%;
+      max-width: 1120px;
+      padding: 10px 8px 10px;
+      border-radius: var(--radius-shell);
+      background:
+        radial-gradient(circle at top, rgba(255,255,255,0.08), transparent 80%)
+        var(--panel);
+      border: 1px solid var(--border-soft);
+      box-shadow: var(--shadow-soft);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    /* HEADER */
+
+    .hub-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .hub-brand {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+
+    .brand-orb {
+      width: 18px;
+      height: 18px;
+      border-radius: 999px;
+      background: radial-gradient(circle at 30% 0, #ffffff, var(--accent));
+      box-shadow: 0 0 10px rgba(34,197,94,0.9);
+    }
+
+    .brand-labels {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+    }
+
+    .brand-text {
+      font-size: 9px;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .brand-sub {
+      font-size: 8px;
+      color: var(--muted);
+    }
+
+    .hub-right {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .live-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 2px 7px;
+      border-radius: 999px;
+      background: rgba(22,163,74,0.06);
+      border: 1px solid rgba(22,163,74,0.32);
+      font-size: 6.3px;
+      color: #16a34a;
+      text-transform: uppercase;
+      letter-spacing: .14em;
+      white-space: nowrap;
+    }
+
+    .live-dot {
+      width: 5px;
+      height: 5px;
+      border-radius: 999px;
+      background: #22c55e;
+      box-shadow: 0 0 8px #22c55e;
+    }
+
+    .fs-btn {
+      padding: 2px 7px;
+      border-radius: 999px;
+      border: 1px solid var(--border-soft);
+      background: rgba(255,255,255,0.96);
+      font-size: 6.5px;
+      color: var(--muted);
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      cursor: pointer;
+    }
+
+    [data-theme="dark"] .fs-btn {
+      background: #020817;
+      color: var(--muted);
+    }
+
+    .back-link {
+      padding: 2px 6px;
+      border-radius: 999px;
+      border: 1px solid var(--border-soft);
+      font-size: 6.3px;
+      color: var(--muted);
+      text-decoration: none;
+      background: rgba(255,255,255,0.95);
+    }
+
+    [data-theme="dark"] .back-link {
+      background: #020817;
+    }
+
+    /* CONSTRUCTION TAPE */
+
+    .tape-wrap {
+      margin-top: 2px;
+    }
+
+    .tape-label {
+      font-size: 6.3px;
+      color: var(--muted);
+      margin-bottom: 1px;
+    }
+
+    .tape {
+      padding: 3px 0;
+      font-size: 6.2px;
+      text-transform: uppercase;
+      letter-spacing: .16em;
+      text-align: center;
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,253,0.26);
+      background:
+        repeating-linear-gradient(
+          -45deg,
+          rgba(234,179,8,0.16) 0 10px,
+          rgba(234,179,8,0.38) 10px 20px
+        );
+      color: #111827;
+      box-shadow: 0 6px 14px rgba(15,23,42,0.18);
+    }
+
+    [data-theme="dark"] .tape {
+      color: #fef9c3;
+      border-color: rgba(0,0,0,0.9);
+      box-shadow: 0 8px 22px rgba(0,0,0,0.96);
+      background:
+        repeating-linear-gradient(
+          -45deg,
+          rgba(234,179,8,0.18) 0 10px,
+          rgba(234,179,8,0.42) 10px 20px
+        );
+    }
+
+    /* LAYOUT GRID */
+
+    .hub-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.9fr) minmax(240px, 1.3fr);
+      gap: 8px;
+      margin-top: 4px;
+    }
+
+    @media (max-width: 800px) {
+      .hub-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* LEFT: CAPTURE + CURRENT TICKET */
+
+    .card {
+      background: rgba(255,255,255,0.98);
+      border-radius: var(--radius-card);
+      border: 1px solid var(--border-soft);
+      padding: 8px 8px 7px;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      font-size: var(--font-xxs);
+    }
+
+    [data-theme="dark"] .card {
+      background: #020817;
+      border-color: var(--border-strong);
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 4px;
+    }
+
+    .card-title {
+      font-size: 8px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: .14em;
+      color: var(--muted);
+    }
+
+    .card-sub {
+      font-size: 7px;
+      color: var(--muted);
+    }
+
+    .pill-soft {
+      padding: 2px 6px;
+      border-radius: 999px;
+      border: 1px solid var(--border-soft);
+      font-size: 6px;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+
+    .capture-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      align-items: center;
+    }
+
+    .capture-btn {
+      flex: 1 1 auto;
+      padding: 7px 10px;
+      border-radius: 999px;
+      border: none;
+      background: radial-gradient(circle at 20% 0, #bbf7d0, #22c55e);
+      color: #020817;
+      font-weight: 600;
+      font-size: 8px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      box-shadow: 0 8px 18px rgba(15,23,42,0.3);
+    }
+
+    .capture-label {
+      font-size: 6.5px;
+      color: var(--muted);
+      flex: 1 1 100%;
+    }
+
+    .thumb-strip {
+      display: flex;
+      gap: 4px;
+      overflow-x: auto;
+      padding: 2px 0 1px;
+    }
+
+    .thumb {
+      height: 54px;
+      width: 96px;
+      border-radius: 9px;
+      border: 1px solid var(--border-soft);
+      object-fit: cover;
+      flex-shrink: 0;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      margin-top: 3px;
+    }
+
+    .field label {
+      font-size: 6.5px;
+      color: var(--muted);
+    }
+
+    .field input,
+    .field select {
+      padding: 5px 7px;
+      border-radius: 8px;
+      border: 1px solid var(--border-soft);
+      font-size: 7px;
+      color: var(--text);
+      background: rgba(249,250,251,0.98);
+      outline: none;
+    }
+
+    [data-theme="dark"] .field input,
+    [data-theme="dark"] .field select {
+      background: #020817;
+      border-color: var(--border-strong);
+      color: var(--text);
+    }
+
+    .submit-btn {
+      margin-top: 5px;
+      padding: 6px 9px;
+      border-radius: 999px;
+      border: none;
+      background: #111827;
+      color: #f9fafb;
+      font-size: 7px;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .submit-btn span {
+      font-size: 8px;
+    }
+
+    .report-box {
+      margin-top: 5px;
+      padding: 7px 8px;
+      border-radius: 11px;
+      border: 1px solid var(--border-soft);
+      background: rgba(249,250,251,0.98);
+      font-size: 7px;
+      display: none;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    [data-theme="dark"] .report-box {
+      background: #020817;
+      border-color: var(--border-strong);
+    }
+
+    .report-label {
+      font-size: 6px;
+      text-transform: uppercase;
+      letter-spacing: .14em;
+      color: var(--muted);
+    }
+
+    /* RIGHT: CARD DECK + MODULE HINTS */
+
+    .deck-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .deck-header-line {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 4px;
+      font-size: 6.5px;
+      color: var(--muted);
+    }
+
+    .deck-label {
+      text-transform: uppercase;
+      letter-spacing: .14em;
+      font-size: 6.5px;
+    }
+
+    .deck-hint {
+      font-size: 6px;
+      color: var(--muted);
+    }
+
+    .jobs-list {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      margin-top: 2px;
+    }
+
+    .job-item {
+      padding: 5px 6px;
+      border-radius: 12px;
+      border: 1px solid var(--border-soft);
+      background: rgba(255,255,255,0.99);
+      display: grid;
+      grid-template-columns: 72px minmax(0,1fr);
+      gap: 5px;
+      align-items: center;
+      font-size: 6.8px;
+    }
+
+    [data-theme="dark"] .job-item {
+      background: #020817;
+      border-color: var(--border-strong);
+    }
+
+    .job-thumb {
+      width: 100%;
+      height: 52px;
+      border-radius: 8px;
+      background: radial-gradient(circle at 30% 0, rgba(34,197,94,0.2), transparent);
+      border: 1px dashed var(--border-soft);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 7px;
+      color: var(--muted);
+    }
+
+    .job-main {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .job-topline {
+      display: flex;
+      justify-content: space-between;
+      gap: 4px;
+    }
+
+    .job-topline strong {
+      font-size: 7.2px;
+    }
+
+    .job-label {
+      font-size: 6px;
+      color: var(--muted);
+    }
+
+    .job-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 3px;
+      margin-top: 2px;
+    }
+
+    .job-btn {
+      padding: 2px 5px;
+      border-radius: 999px;
+      border: 1px solid var(--border-soft);
+      font-size: 5.8px;
+      color: var(--muted);
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    .job-btn.paid-hint {
+      border-style: dashed;
+      opacity: 0.7;
+    }
+
+    .job-btn span.dot {
+      width: 4px;
+      height: 4px;
+      border-radius: 999px;
+      background: var(--accent);
+      display: inline-block;
+      margin-right: 2px;
+    }
+
+    /* LANDSCAPE / "BOOK" MODE */
+
+    @media (orientation: landscape) and (min-width: 720px) {
+      .hub-shell {
+        height: calc(100vh - 24px);
+        max-height: 720px;
+      }
+
+      .hub-grid {
+        height: 100%;
+        grid-template-rows: 1fr;
+      }
+
+      #ticketCard {
+        height: 100%;
+      }
+
+      .deck-wrap {
+        height: 100%;
+      }
+
+      .jobs-list {
+        flex-direction: row;
+        overflow-x: auto;
+        overflow-y: hidden;
+        align-items: stretch;
+      }
+
+      .job-item {
+        flex: 0 0 240px;
+        grid-template-columns: 1fr;
+        height: 100%;
+      }
+    }
+  </style>
+</head>
+<body data-theme="light">
+  <main class="hub-shell" id="hubShell">
+    <!-- HEADER -->
+    <header class="hub-head">
+      <div class="hub-brand">
+        <div class="brand-orb"></div>
+        <div class="brand-labels">
+          <div class="brand-text">WorkAI Hub</div>
+          <div class="brand-sub">Each job gets its own ticket card.</div>
         </div>
-      `;
-      jobsList.appendChild(item);
-    });
-  } catch (e) {
-    console.warn("Could not load existing jobs", e);
-  }
-})();
+      </div>
+      <div class="hub-right">
+        <div class="live-pill">
+          <div class="live-dot"></div>
+          Building in public · alpha
+        </div>
+        <button class="fs-btn" id="fsToggle">
+          ⤢ View full deck
+        </button>
+        <a href="index.html" class="back-link">← Front door</a>
+      </div>
+    </header>
+
+    <!-- TAPE -->
+    <div class="tape-wrap">
+      <div class="tape-label">You’re looking at the real brain, not a mockup.</div>
+      <div class="tape">
+        UNDER CONSTRUCTION • REAL INPUTS ONLY • SCREENSHOT-SAFE FOR YOUR CUSTOMERS
+      </div>
+    </div>
+
+    <!-- GRID -->
+    <section class="hub-grid">
+      <!-- LEFT: CURRENT JOB / CAPTURE -->
+      <section class="card" id="ticketCard">
+        <div class="card-header">
+          <div>
+            <div class="card-title">New job capture</div>
+            <div class="card-sub">Snap or upload, tell us what you charged, get a clean band.</div>
+          </div>
+          <div class="pill-soft">Button → Capture → Band</div>
+        </div>
+
+        <div class="capture-row">
+          <button id="captureJobBtn" class="capture-btn">
+            <span>📸</span> Add from camera / library
+          </button>
+        </div>
+        <div class="capture-label">
+          One clear photo per ticket (or short walkaround). Context in your words = better band.
+        </div>
+
+        <!-- Hidden input for main.js -->
+        <input id="mediaInput" type="file" accept="image/*,video/*" multiple style="display:none" />
+
+        <!-- Thumbnails -->
+        <div id="thumbStrip" class="thumb-strip"></div>
+
+        <!-- Inputs -->
+        <div class="field">
+          <label for="priceInput">What did you charge for this job? (USD)</label>
+          <input id="priceInput" type="number" placeholder="e.g. 480" />
+        </div>
+
+        <div class="field">
+          <label for="descInput">Quick description (what’s the work?)</label>
+          <input
+            id="descInput"
+            type="text"
+            placeholder="Mulch + edge front beds, haul-off included"
+          />
+        </div>
+
+        <div class="field">
+          <label for="scopeType">Scope mode</label>
+          <select id="scopeType">
+            <option value="snapshot">Snapshot · fits in one frame</option>
+            <option value="walkaround">Walkaround · talk while you walk</option>
+          </select>
+        </div>
+
+        <!-- Trigger -->
+        <button id="smartReportBtn" class="submit-btn">
+          Get Smart Band & field note <span>↗</span>
+        </button>
+
+        <!-- Smart report (filled by main.js) -->
+        <div id="smartReport" class="report-box">
+          <div class="report-label">Smart report</div>
+          <!-- main.js will inject band, upsell, notes, etc. -->
+        </div>
+      </section>
+
+      <!-- RIGHT: CARD DECK (JOBS) -->
+      <aside class="deck-wrap">
+        <div class="deck-header-line">
+          <div class="deck-label">Job card deck</div>
+          <div class="deck-hint">
+            Each run becomes a card. Swipe in landscape. Screenshot to text your client.
+          </div>
+        </div>
+
+        <div id="jobsList" class="jobs-list">
+          <!-- main.js will inject .job-item cards here -->
+          <!-- Template main.js aims for:
+          <div class="job-item">
+            <div class="job-thumb">Photo</div>
+            <div class="job-main">
+              <div class="job-topline">
+                <strong>$480</strong>
+                <span class="job-label">Snapshot</span>
+              </div>
+              <div>Mulch + edge front beds</div>
+              <div><span class="job-label">Band:</span> $450–$525</div>
+              <div class="job-actions">
+                <div class="job-btn">View docs</div>
+                <div class="job-btn">Copy ticket</div>
+                <div class="job-btn paid-hint"><span class="dot"></span>Send to customer (soon)</div>
+              </div>
+            </div>
+          </div>
+          -->
+        </div>
+      </aside>
+    </section>
+  </main>
+
+  <!-- Fullscreen + theme glue (non-conflicting with main.js) -->
+  <script>
+    (function () {
+      const shell = document.getElementById("hubShell");
+      const fsToggle = document.getElementById("fsToggle");
+
+      if (fsToggle && shell && document.fullscreenEnabled) {
+        fsToggle.addEventListener("click", async () => {
+          try {
+            if (!document.fullscreenElement) {
+              await shell.requestFullscreen();
+              fsToggle.textContent = "⤢ Exit full deck";
+            } else {
+              await document.exitFullscreen();
+              fsToggle.textContent = "⤢ View full deck";
+            }
+          } catch (e) {
+            console.warn("Fullscreen error", e);
+          }
+        });
+      }
+    })();
+  </script>
+
+  <!-- Main WorkAI hub logic -->
+  <script src="assets/js/main.js"></script>
+</body>
+</html>
