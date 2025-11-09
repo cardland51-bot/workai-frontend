@@ -3,20 +3,18 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-  <title>WorkAI • Capture. Explain. Charge Right.</title>
-  <meta name="description" content="WorkAI turns real job photos and quick descriptions into smarter pricing signals for contractors." />
+  <title>WorkAI • Know Your Worth.</title>
+  <meta name="description" content="Snap real jobs. WorkAI turns your work into a smart, screenshot-safe ticket band." />
   <style>
     :root {
-      /* LIGHT THEME (default) */
-      --bg: #f5fbf6;
+      --bg: #f9fafb;
       --panel: #ffffff;
       --accent: #22c55e;
       --accent-soft: rgba(34,197,94,0.14);
       --text: #020817;
-      --muted: #64748b;
-      --border: rgba(148,163,253,0.18);
-      --warn: #f97316;
-      --shadow-soft: 0 12px 40px rgba(15,23,42,0.12);
+      --muted: #6b7280;
+      --border: rgba(148,163,253,0.16);
+      --shadow-soft: 0 10px 32px rgba(15,23,42,0.12);
       --shell-radius: 26px;
     }
 
@@ -28,16 +26,11 @@
       --text:#e5e7eb;
       --muted:#9ca3af;
       --border:rgba(75,85,99,0.9);
-      --warn:#facc15;
       --shadow-soft:0 22px 70px rgba(0,0,0,0.9);
       --shell-radius:28px;
     }
 
-    * {
-      box-sizing:border-box;
-      margin:0;
-      padding:0;
-    }
+    * { box-sizing:border-box; margin:0; padding:0; }
 
     body {
       font-family: system-ui, -apple-system, BlinkMacSystemFont, -sans-serif;
@@ -57,7 +50,7 @@
       width:100%;
       max-width:1120px;
       border-radius:var(--shell-radius);
-      padding:26px 22px 22px;
+      padding:24px 20px 20px;
       border:1px solid var(--border);
       background:
         radial-gradient(circle at top, rgba(255,255,255,0.06), transparent 78%)
@@ -65,15 +58,14 @@
       box-shadow:var(--shadow-soft);
       display:flex;
       flex-direction:column;
-      gap:22px;
-      transition: all .25s ease;
+      gap:20px;
     }
 
     .top-row {
       display:flex;
       justify-content:space-between;
       align-items:center;
-      gap:14px;
+      gap:12px;
     }
 
     .brand-lockup {
@@ -91,7 +83,7 @@
     }
 
     .brand-text {
-      font-size:14px;
+      font-size:13px;
       letter-spacing:.10em;
       text-transform:uppercase;
       color:var(--muted);
@@ -110,7 +102,7 @@
       border-radius:999px;
       background:rgba(22,163,74,0.06);
       border:1px solid rgba(22,163,74,0.32);
-      font-size:9px;
+      font-size:8px;
       color:var(--accent);
       text-transform:uppercase;
       letter-spacing:.13em;
@@ -128,45 +120,45 @@
     .top-right {
       display:flex;
       align-items:center;
-      gap:10px;
+      gap:8px;
     }
 
-    .mode-toggle {
-      padding:4px 10px;
+    .top-menu {
+      display:flex;
+      align-items:center;
+      gap:6px;
+      padding:4px 8px;
       border-radius:999px;
       border:1px solid var(--border);
       background:rgba(255,255,255,0.96);
+      font-size:8px;
       color:#111827;
-      font-size:9px;
-      display:inline-flex;
-      align-items:center;
-      gap:6px;
-      cursor:pointer;
-      transition:all .18s ease;
     }
 
-    body[data-theme="dark"] .mode-toggle {
-      background:rgba(3,7,6,1);
+    body[data-theme="dark"] .top-menu {
+      background:#020817;
       color:var(--muted);
     }
 
-    .mode-toggle-orb {
-      width:10px;
-      height:10px;
-      border-radius:999px;
-      background:linear-gradient(135deg, #22c55e, #38bdf8);
-      box-shadow:0 0 9px rgba(56,189,248,0.9);
+    .top-menu select {
+      border:none;
+      background:transparent;
+      font-size:8px;
+      padding:0;
+      outline:none;
+      color:inherit;
+      appearance:none;
     }
 
     .grid {
       display:grid;
       grid-template-columns: minmax(0,2.1fr) minmax(260px,1.5fr);
-      gap:22px;
+      gap:20px;
       align-items:stretch;
     }
 
     .hero-title {
-      font-size:26px;
+      font-size:24px;
       line-height:1.25;
       font-weight:600;
       margin-bottom:6px;
@@ -178,202 +170,170 @@
     }
 
     .hero-body {
-      font-size:13px;
+      font-size:12px;
       color:var(--muted);
-      max-width:480px;
-      margin-bottom:14px;
+      max-width:420px;
+      margin-bottom:10px;
     }
 
     .cta-row {
       display:flex;
       flex-wrap:wrap;
       gap:10px;
-      margin-bottom:10px;
-    }
-
-    .btn {
-      padding:9px 16px;
-      border-radius:999px;
-      border:1px solid transparent;
-      font-size:12px;
-      cursor:pointer;
-      display:inline-flex;
+      margin-bottom:8px;
       align-items:center;
-      gap:7px;
-      text-decoration:none;
-      transition:all .22s ease;
-      white-space:nowrap;
     }
 
-    .btn-primary {
-      background:linear-gradient(90deg, var(--accent), #38bdf8);
-      color:#020817;
-      font-weight:600;
-      box-shadow:0 10px 24px rgba(15,23,42,0.28);
+    .orb-wrap {
+      display:flex;
+      align-items:center;
+      gap:8px;
     }
 
-    .btn-primary:hover {
+    .camera-orb {
+      width:60px;
+      height:60px;
+      border-radius:999px;
+      background:
+        radial-gradient(circle at 30% 0, #ffffff, var(--accent))
+        ;
+      box-shadow:0 10px 26px rgba(15,23,42,0.26),
+                 0 0 18px rgba(34,197,94,0.85);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      cursor:pointer;
+      position:relative;
+      transition:all .18s ease;
+    }
+
+    .camera-orb-inner {
+      width:26px;
+      height:26px;
+      border-radius:999px;
+      border:2px solid rgba(15,23,42,0.9);
+      box-shadow:inset 0 0 8px rgba(15,23,42,0.18);
+    }
+
+    .camera-orb:hover {
       transform:translateY(-1px);
-      box-shadow:0 14px 34px rgba(15,23,42,0.42);
+      box-shadow:0 14px 34px rgba(15,23,42,0.32),
+                 0 0 22px rgba(34,197,94,0.95);
+    }
+
+    .orb-label {
+      font-size:10px;
+      color:var(--muted);
     }
 
     .btn-ghost {
-      border-color:var(--border);
+      padding:7px 12px;
+      border-radius:999px;
+      border:1px solid var(--border);
+      font-size:9px;
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      text-decoration:none;
       color:var(--muted);
-      background:rgba(255,255,255,0.86);
+      background:rgba(255,255,255,0.92);
+      cursor:pointer;
+      transition:all .18s ease;
     }
 
     body[data-theme="dark"] .btn-ghost {
-      background:rgba(3,6,5,0.96);
+      background:#020817;
     }
 
     .btn-ghost span.icon {
-      width:12px;
-      height:12px;
+      width:9px;
+      height:9px;
       border-radius:50%;
       border:1px solid var(--accent);
-      box-shadow:0 0 10px var(--accent-soft);
+      box-shadow:0 0 6px var(--accent-soft);
     }
 
     .microcopy {
-      font-size:9px;
+      font-size:8px;
       color:var(--muted);
-    }
-
-    .steps {
-      display:flex;
-      flex-wrap:wrap;
-      gap:8px;
-      margin-top:8px;
-      font-size:9px;
-      color:var(--muted);
-    }
-
-    .steps span {
-      padding:4px 8px;
-      border-radius:999px;
-      border:1px solid rgba(148,163,253,0.2);
-      background:rgba(255,255,255,0.9);
-      color:#111827;
-    }
-
-    body[data-theme="dark"] .steps span {
-      background:rgba(0,0,0,0.38);
-      color:var(--muted);
-      border-color:rgba(75,85,99,0.9);
     }
 
     .right-panel {
-      position:relative;
-      padding:14px 12px 10px;
-      border-radius:20px;
+      padding:12px 10px 9px;
+      border-radius:18px;
       background:radial-gradient(circle at top, var(--accent-soft), transparent 80%) var(--panel);
       border:1px solid var(--border);
       display:flex;
       flex-direction:column;
-      gap:10px;
-      overflow:hidden;
-      transition:all .25s ease;
+      gap:8px;
+      font-size:8px;
     }
 
     .rp-label {
-      font-size:9px;
+      font-size:8px;
       color:var(--muted);
       text-transform:uppercase;
       letter-spacing:.16em;
     }
 
     .rp-title {
-      font-size:13px;
+      font-size:11px;
       font-weight:600;
-      margin-bottom:2px;
     }
 
     .rp-pillrow {
       display:flex;
       flex-wrap:wrap;
-      gap:6px;
-      font-size:8px;
+      gap:4px;
+      margin-top:2px;
     }
 
     .rp-pill {
-      padding:4px 7px;
+      padding:3px 6px;
       border-radius:999px;
-      border:1px solid rgba(148,163,253,0.2);
+      border:1px solid rgba(148,163,253,0.22);
+      background:rgba(255,255,255,0.96);
       color:var(--muted);
-      background:rgba(255,255,255,0.9);
-    }
-
-    body[data-theme="dark"] .rp-pill {
-      background:rgba(0,0,0,0.78);
-      border-color:rgba(148,163,253,0.26);
+      font-size:7px;
     }
 
     .fake-screen {
       margin-top:4px;
-      padding:7px;
-      border-radius:12px;
-      background:rgba(249,250,251,0.99);
-      border:1px solid rgba(226,232,240,0.9);
+      padding:6px;
+      border-radius:10px;
+      background:#f9fafb;
+      border:1px solid #e5e7eb;
       display:flex;
       flex-direction:column;
-      gap:5px;
-      font-size:8px;
+      gap:4px;
+      font-size:7px;
       color:#4b5563;
     }
 
     body[data-theme="dark"] .fake-screen {
-      background:rgba(0,0,0,0.9);
-      border-color:rgba(75,85,99,0.9);
+      background:#020817;
+      border-color:#374151;
       color:var(--muted);
     }
 
     .fake-label {
       text-transform:uppercase;
       letter-spacing:.14em;
-      font-size:7px;
+      font-size:6px;
       color:var(--accent);
     }
 
     .fake-row {
       display:flex;
       justify-content:space-between;
-      align-items:center;
       gap:6px;
-    }
-
-    .fake-tag {
-      padding:2px 6px;
-      border-radius:999px;
-      border:1px solid rgba(148,163,253,0.4);
-      font-size:7px;
-      color:#4b5563;
-    }
-
-    body[data-theme="dark"] .fake-tag {
-      border-color:rgba(148,163,253,0.32);
-      color:var(--muted);
-    }
-
-    .bar-wrap {
-      width:100%;
-      height:5px;
-      border-radius:999px;
-      background:rgba(148,163,253,0.14);
-      overflow:hidden;
-    }
-
-    .bar-fill {
-      width:72%;
-      height:100%;
-      border-radius:999px;
-      background:linear-gradient(90deg, var(--accent), #38bdf8);
+      align-items:center;
     }
 
     .tape {
-      margin-top:9px;
-      padding:4px 0;
-      font-size:8px;
+      margin-top:7px;
+      padding:3px 0;
+      font-size:7px;
       text-transform:uppercase;
       letter-spacing:.16em;
       background:repeating-linear-gradient(
@@ -383,33 +343,15 @@
       );
       color:#111827;
       text-align:center;
-      border-radius:14px;
+      border-radius:12px;
       border:1px solid rgba(148,163,253,0.22);
-      box-shadow:0 8px 18px rgba(15,23,42,0.18);
-    }
-
-    body[data-theme="dark"] .tape {
-      color:#bbf7d0;
-      border-color:rgba(0,0,0,0.9);
-      box-shadow:0 8px 22px rgba(0,0,0,0.9);
-      background:repeating-linear-gradient(
-        -45deg,
-        rgba(34,197,94,0.14) 0 8px,
-        rgba(34,197,94,0.32) 8px 16px
-      );
+      box-shadow:0 6px 16px rgba(15,23,42,0.16);
     }
 
     @media (max-width:720px) {
-      .shell {
-        padding:20px 14px 16px;
-        border-radius:22px;
-      }
-      .grid {
-        grid-template-columns:1fr;
-      }
-      .hero-title {
-        font-size:22px;
-      }
+      .shell { padding:18px 12px 16px; }
+      .grid { grid-template-columns:1fr; }
+      .hero-title { font-size:20px; }
     }
   </style>
 </head>
@@ -420,14 +362,27 @@
         <div class="brand-orb"></div>
         <div>
           <div class="brand-text">WorkAI</div>
-          <div class="brand-sub">Work ➜ AI ➜ Smart Ticket</div>
+          <div class="brand-sub">Know your worth. Simple.</div>
         </div>
       </div>
       <div class="top-right">
-        <button class="mode-toggle" id="modeToggle">
-          <div class="mode-toggle-orb"></div>
-          <span id="modeLabel">DAY MODE</span>
-        </button>
+        <div class="top-menu">
+          <span>☀︎/☾</span>
+          <select id="themeSelect">
+            <option value="light">Light</option>
+            <option value="dark">Dark</option>
+          </select>
+          <span>🎨</span>
+          <select id="accentSelect">
+            <option value="green">Green</option>
+            <option value="blue">Blue</option>
+          </select>
+          <span>🌐</span>
+          <select id="langSelect">
+            <option value="en">EN</option>
+            <option value="es">ES</option>
+          </select>
+        </div>
         <div class="live-pill">
           <div class="live-dot"></div>
           Building in public · alpha
@@ -436,110 +391,167 @@
     </div>
 
     <section class="grid">
-      <!-- LEFT: Copy & CTAs -->
+      <!-- LEFT: Minimal message + camera orb + peek -->
       <div>
         <h1 class="hero-title">
-          Upload your work. <span class="hero-highlight">Watch WorkAI price it like the other guy.</span><br>
-          Keep your margin. Keep your dignity.
+          Upload your work. <span class="hero-highlight">Know your worth.</span>
         </h1>
         <p class="hero-body">
-          WorkAI is a simple widget for small operators. Drop a job photo or quick walk-through,
-          add the price you charged, and we return a Smart Report with a price band, upsell window,
-          and how you stack against “the other guy” — without racing to the bottom.
+          Snap a real job. We’ll turn it into a smart, screenshot-safe ticket band.
+          No gimmicks. No race to the bottom.
         </p>
 
         <div class="cta-row">
-          <a href="dashboard.html" class="btn btn-primary">
-            Launch Work Hub
-            <span>↗</span>
-          </a>
-          <a href="#how-it-works" class="btn btn-ghost">
+          <div class="orb-wrap">
+            <div class="camera-orb" id="launchWithSnap">
+              <div class="camera-orb-inner"></div>
+            </div>
+            <div class="orb-label">Tap to open camera and start a Smart Report.</div>
+          </div>
+          <button class="btn-ghost" id="peekBtn">
             <span class="icon"></span>
-            See how it fits your day
-          </a>
+            Peek under the hood
+          </button>
         </div>
 
         <div class="microcopy">
-          No login wall in alpha. No credit card. Just signal: upload a few real jobs, get real feedback.
-        </div>
-
-        <div class="steps" id="how-it-works">
-          <span>① Snap a job (photo or short video)</span>
-          <span>② Tell us what you charged</span>
-          <span>③ WorkAI returns a smart band</span>
-          <span>④ We quietly learn your lane</span>
+          Alpha means: it might break. That’s the point. Help us harden the tool built for your lane.
         </div>
       </div>
 
-      <!-- RIGHT: Live-ish Smart Report teaser -->
+      <!-- RIGHT: Smart Report teaser -->
       <aside class="right-panel">
         <div>
           <div class="rp-label">Smart Report Preview</div>
-          <div class="rp-title">WorkAI · Small Job Widget</div>
+          <div class="rp-title">WorkAI Ticket Deck</div>
           <div class="rp-pillrow">
-            <div class="rp-pill">Snapshot & Walkaround modes</div>
-            <div class="rp-pill">Audio-aware (soon)</div>
+            <div class="rp-pill">Works from your photos</div>
+            <div class="rp-pill">Snapshot & walkaround</div>
             <div class="rp-pill">No middleman</div>
           </div>
         </div>
 
         <div class="fake-screen">
-          <div class="fake-label">Example from your crew</div>
+          <div class="fake-label">Example read</div>
           <div class="fake-row">
-            <span>Mulch + Edge • 3 hrs • Single crew</span>
-            <span class="fake-tag">Operator upload</span>
+            <span>Driveway cleanup • 1 crew</span>
+            <span>$480 input</span>
           </div>
           <div class="fake-row">
-            <span>You charged:</span>
-            <strong>$480</strong>
-          </div>
-          <div class="fake-row">
-            <span>WorkAI band:</span>
+            <span>Band:</span>
             <strong>$450 – $525</strong>
           </div>
           <div class="fake-row">
-            <span>Upsell window:</span>
-            <span>+12–18% w/ haul-away + crisp edge</span>
-          </div>
-          <div class="bar-wrap">
-            <div class="bar-fill"></div>
-          </div>
-          <div class="fake-row">
-            <span>Notes:</span>
-            <span>Messaging & photos support your price. You’re not “too high”.</span>
+            <span>Signal:</span>
+            <span>Solid lane. No need to discount.</span>
           </div>
         </div>
 
         <div class="tape">
-          REAL INPUTS • REAL OPERATORS • WEAPONIZED CONFIDENCE, NOT CHEAP QUOTES
+          UNDER THE HOOD: REAL BACKEND · REAL RULES · TRY TO BREAK IT FOR US
         </div>
       </aside>
     </section>
   </main>
 
+  <!-- Hidden input for camera -->
+  <input
+    id="landingMediaInput"
+    type="file"
+    accept="image/*,video/*"
+    capture="environment"
+    multiple
+    style="display:none"
+  />
+
   <script>
+    // Theme & accent controls (simple)
     (function () {
       const body = document.body;
-      const toggle = document.getElementById("modeToggle");
-      const label = document.getElementById("modeLabel");
-      const saved = localStorage.getItem("workai-theme");
+      const themeSelect = document.getElementById("themeSelect");
+      const accentSelect = document.getElementById("accentSelect");
 
-      if (saved === "dark") {
-        body.setAttribute("data-theme", "dark");
-        if (label) label.textContent = "NIGHT MODE";
+      // Restore
+      const savedTheme = localStorage.getItem("workai-theme");
+      const savedAccent = localStorage.getItem("workai-accent");
+
+      if (savedTheme) {
+        body.setAttribute("data-theme", savedTheme);
+        if (themeSelect) themeSelect.value = savedTheme;
+      }
+      if (savedAccent === "blue") {
+        document.documentElement.style.setProperty("--accent", "#38bdf8");
       }
 
-      if (toggle) {
-        toggle.addEventListener("click", () => {
-          const current = body.getAttribute("data-theme") || "light";
-          const next = current === "light" ? "dark" : "light";
-          body.setAttribute("data-theme", next);
-          localStorage.setItem("workai-theme", next);
-          if (label) label.textContent = next === "dark" ? "NIGHT MODE" : "DAY MODE";
+      if (themeSelect) {
+        themeSelect.addEventListener("change", () => {
+          const val = themeSelect.value;
+          body.setAttribute("data-theme", val);
+          localStorage.setItem("workai-theme", val);
         });
       }
+
+      if (accentSelect) {
+        accentSelect.addEventListener("change", () => {
+          const val = accentSelect.value;
+          const accent = val === "blue" ? "#38bdf8" : "#22c55e";
+          document.documentElement.style.setProperty("--accent", accent);
+          localStorage.setItem("workai-accent", val);
+        });
+      }
+    })();
+
+    // Camera orb → capture → stash → go to dashboard
+    (function () {
+      const orb = document.getElementById("launchWithSnap");
+      const input = document.getElementById("landingMediaInput");
+
+      if (!orb || !input) return;
+
+      orb.addEventListener("click", (e) => {
+        e.preventDefault();
+        input.click();
+      });
+
+      input.addEventListener("change", () => {
+        const files = input.files;
+        if (!files || !files.length) {
+          window.location.href = "dashboard.html";
+          return;
+        }
+
+        const readers = [];
+        const dataUrls = [];
+
+        Array.from(files).forEach((file, idx) => {
+          readers[idx] = new FileReader();
+          readers[idx].onload = (ev) => {
+            dataUrls[idx] = ev.target.result;
+            if (dataUrls.filter(Boolean).length === files.length) {
+              try {
+                sessionStorage.setItem(
+                  "workai-initial-media-list",
+                  JSON.stringify(dataUrls)
+                );
+              } catch (e) {}
+              window.location.href = "dashboard.html";
+            }
+          };
+          readers[idx].readAsDataURL(file);
+        });
+      });
+    })();
+
+    // Peek under the hood → simple docs/demo page (stub)
+    (function () {
+      const peekBtn = document.getElementById("peekBtn");
+      if (!peekBtn) return;
+      peekBtn.addEventListener("click", () => {
+        // Point this at a simple static page explaining:
+        // how we use photos, how bands work, alpha disclaimer, etc.
+        window.location.href = "docs.html";
+      });
     })();
   </script>
 </body>
 </html>
-
