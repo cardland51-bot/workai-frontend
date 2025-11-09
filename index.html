@@ -1246,6 +1246,56 @@
         });
       }
     })();
-  </script>
+
+  (function () {
+    const openBtn = document.getElementById("openCameraBtn");
+    const mediaInput = document.getElementById("landingMediaInput");
+
+    if (!openBtn || !mediaInput) return;
+
+    // Step 1: click = open camera / picker
+    openBtn.addEventListener("click", () => {
+      mediaInput.click();
+    });
+
+    // Step 2: when user picks/snaps, stash + go to hub
+    mediaInput.addEventListener("change", () => {
+      if (!mediaInput.files || !mediaInput.files.length) return;
+
+      const files = Array.from(mediaInput.files);
+
+      // We'll store small data URLs for the hub thumbnails.
+      const readers = [];
+      const urls = [];
+
+      files.forEach((file, index) => {
+        const reader = new FileReader();
+        readers.push(reader);
+
+        reader.onload = (e) => {
+          const result = e.target.result;
+          if (result) {
+            urls[index] = result;
+          }
+          // When all readers done, save + redirect
+          if (urls.filter(Boolean).length === files.length) {
+            try {
+              sessionStorage.setItem(
+                "workai-initial-media-list",
+                JSON.stringify(urls)
+              );
+            } catch (err) {
+              console.warn("Could not store media preview list", err);
+            }
+            window.location.href = "dashboard.html";
+          }
+        };
+
+        // Tiny size is enough for preview; original will be re-selected in hub.
+        reader.readAsDataURL(file);
+      });
+    });
+  })();
+</script>
 </body>
 </html>
