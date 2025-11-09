@@ -1,5 +1,6 @@
 const API_BASE = "https://workai-backend.onrender.com";
 
+// --- DOM HOOKS ---
 const captureBtn = document.getElementById("captureJobBtn");
 const mediaInput = document.getElementById("mediaInput");
 const thumbStrip = document.getElementById("thumbStrip");
@@ -10,57 +11,46 @@ const smartReportBtn = document.getElementById("smartReportBtn");
 const smartReport = document.getElementById("smartReport");
 const jobsList = document.getElementById("jobsList");
 
-let preloadedFile = null; // from landing snap, if present
-
-// If we came from the landing page with a captured image, preload it
-(function preloadFromLanding() {
+// --- 1. SEED FROM LANDING (sessionStorage) ---
+(function seedFromLanding() {
   if (!thumbStrip) return;
   try {
-    const cached = sessionStorage.getItem("workai-initial-media");
-    if (!cached) return;
+    const listRaw = sessionStorage.getItem("workai-initial-media-list");
+    const single = sessionStorage.getItem("workai-initial-media");
+    const urls = listRaw ? JSON.parse(listRaw) : (single ? [single] : []);
+    if (!urls || !urls.length) return;
 
-    // Show preview
-    const img = document.createElement("img");
-    img.src = cached;
-    img.className = "thumb";
-    thumbStrip.appendChild(img);
-
-    // Rebuild a File from the dataURL so backend gets a real file
-    const parts = cached.split(",");
-    if (parts.length === 2) {
-      const mimeMatch = parts[0].match(/data:(.*);base64/);
-      const mime = mimeMatch ? mimeMatch[1] : "image/jpeg";
-      const bstr = atob(parts[1]);
-      const len = bstr.length;
-      const u8 = new Uint8Array(len);
-      for (let i = 0; i < len; i++) {
-        u8[i] = bstr.charCodeAt(i);
+    thumbStrip.innerHTML = "";
+    urls.forEach((src) => {
+      const isVideo = src.startsWith("data:video");
+      const el = document.createElement(isVideo ? "video" : "img");
+      el.src = src;
+      el.className = "thumb";
+      if (isVideo) {
+        el.muted = true;
+        el.playsInline = true;
       }
-      preloadedFile = new File([u8], "workai-capture.jpg", { type: mime });
-    }
-
-    sessionStorage.removeItem("workai-initial-media");
+      thumbStrip.appendChild(el);
+    });
   } catch (e) {
-    console.error("Preload from landing failed:", e);
+    console.warn("No initial media from landing.", e);
   }
 })();
 
-// Open camera / picker
+// --- 2. CAPTURE / PICK MEDIA IN HUB ---
 if (captureBtn && mediaInput) {
   captureBtn.addEventListener("click", () => mediaInput.click());
 
   mediaInput.addEventListener("change", () => {
+    if (!thumbStrip) return;
     thumbStrip.innerHTML = "";
-    preloadedFile = null; // user chose new media, drop preloaded
-
     Array.from(mediaInput.files).forEach((file) => {
       const url = URL.createObjectURL(file);
-      const el = document.createElement(
-        file.type.startsWith("video/") ? "video" : "img"
-      );
+      const isVideo = file.type.startsWith("video/");
+      const el = document.createElement(isVideo ? "video" : "img");
       el.src = url;
       el.className = "thumb";
-      if (el.tagName === "VIDEO") {
+      if (isVideo) {
         el.muted = true;
         el.playsInline = true;
       }
@@ -69,35 +59,35 @@ if (captureBtn && mediaInput) {
   });
 }
 
-// Submit to backend
+// --- 3. SEND TO BACKEND FOR REAL BAND ---
 if (smartReportBtn) {
   smartReportBtn.addEventListener("click", async () => {
-    smartReport.style.display = "none";
-    smartReport.innerHTML = "";
-
-    const hasFileInput = mediaInput && mediaInput.files && mediaInput.files.length > 0;
-
-    if (!hasFileInput && !preloadedFile) {
-      alert("Snap or select at least one photo/video first.");
+    if (!mediaInput.files.length) {
+      alert("Add at least one photo or short video of the job first.");
       return;
     }
+    const price = (priceInput?.value || "").trim();
+    const description = (descInput?.value || "").trim();
+    const scope = (scopeType?.value || "snapshot").trim();
 
-    const price = priceInput.value.trim();
-    const description = descInput.value.trim();
     if (!price || !description) {
-      alert("Add what you charged and a quick description.");
+      alert("Add what you charged and a quick description so we’re not guessing.");
       return;
     }
 
     const fd = new FormData();
-    const fileToSend = hasFileInput ? mediaInput.files[0] : preloadedFile;
-    fd.append("media", fileToSend);
+    fd.append("media", mediaInput.files[0]); // first file = main handle
     fd.append("price", price);
     fd.append("description", description);
-    fd.append("scopeType", scopeType ? (scopeType.value || "snapshot") : "snapshot");
+    fd.append("scopeType", scope);
 
     smartReportBtn.disabled = true;
-    smartReportBtn.textContent = "Thinking...";
+    smartReportBtn.textContent = "Thinking…";
+
+    if (smartReport) {
+      smartReport.style.display = "none";
+      smartReport.innerHTML = "";
+    }
 
     try {
       const res = await fetch(`${API_BASE}/api/jobs/upload`, {
@@ -106,61 +96,106 @@ if (smartReportBtn) {
       });
 
       if (!res.ok) {
+        console.error("Upload failed:", res.status, await res.text().catch(() => ""));
         throw new Error("Upload failed");
       }
 
       const job = await res.json();
 
-      // Show screenshot-safe Smart Report
-      smartReport.innerHTML = `
-        <div><strong>Band:</strong> $${job.aiLow} – $${job.aiHigh}</div>
-        <div><strong>Upsell signal:</strong> ${job.upsellPotential}%</div>
-        <div><strong>Read:</strong> ${job.notes}</div>
-      `;
-      smartReport.style.display = "block";
+      // Expect backend to give us:
+      // price, scopeType, description,
+      // aiLow, aiHigh, upsellPotential, notes,
+      // materialsSummary, laborSummary (optional)
+      const aiLow = job.aiLow ?? job.bandLow ?? "";
+      const aiHigh = job.aiHigh ?? job.bandHigh ?? "";
+      const upsell = job.upsellPotential ?? "";
+      const notes = job.notes ?? "Field note not available.";
+      const mat = job.materialsSummary ?? "";
+      const labor = job.laborSummary ?? "";
 
-      // Prepend to recent jobs
+      if (smartReport) {
+        smartReport.innerHTML = `
+          <div class="report-label">Smart report</div>
+          <div><strong>Band:</strong> ${
+            aiLow && aiHigh ? `$${aiLow} – $${aiHigh}` : "Pending / not returned"
+          }</div>
+          ${
+            mat
+              ? `<div><strong>Materials (est):</strong> ${mat}</div>`
+              : ""
+          }
+          ${
+            labor
+              ? `<div><strong>Time / crew (est):</strong> ${labor}</div>`
+              : ""
+          }
+          ${
+            upsell !== ""
+              ? `<div><strong>Upsell lane (signal only):</strong> ${upsell}%</div>`
+              : ""
+          }
+          <div><strong>Read:</strong> ${notes}</div>
+        `;
+        smartReport.style.display = "flex";
+      }
+
+      // Append to jobs list
       if (jobsList) {
         const item = document.createElement("div");
         item.className = "job-item";
         item.innerHTML = `
-          <div><strong>$${job.price}</strong> • ${job.scopeType}</div>
-          <div>${job.description}</div>
-          <div>Band: $${job.aiLow}–$${job.aiHigh} · Upsell: ${job.upsellPotential}%</div>
+          <div><strong>$${job.price ?? price}</strong> • ${job.scopeType ?? scope}</div>
+          <div>${job.description ?? description}</div>
+          <div>
+            <span class="label">Band:</span>
+            ${
+              aiLow && aiHigh
+                ? `$${aiLow}–$${aiHigh}`
+                : "n/a"
+            }
+          </div>
         `;
         jobsList.prepend(item);
       }
-
-      // One successful run: clear preloaded file so next snap is fresh
-      preloadedFile = null;
     } catch (err) {
       console.error(err);
-      alert("Something glitched. Try again.");
+      alert("Something glitched on the band. Check backend URL / logs and try again.");
     } finally {
       smartReportBtn.disabled = false;
-      smartReportBtn.textContent = "Get Smart Report";
+      smartReportBtn.textContent = "Get Smart Band & field note ↗";
     }
   });
 }
 
-// Load existing jobs on page load
-(async () => {
+// --- 4. LOAD EXISTING JOBS ON ENTRY (optional) ---
+(async function loadJobs() {
   if (!jobsList) return;
   try {
     const res = await fetch(`${API_BASE}/api/jobs/list`);
     if (!res.ok) return;
     const jobs = await res.json();
+    if (!Array.isArray(jobs)) return;
+
     jobs.slice().reverse().forEach((job) => {
+      const aiLow = job.aiLow ?? job.bandLow;
+      const aiHigh = job.aiHigh ?? job.bandHigh;
       const item = document.createElement("div");
       item.className = "job-item";
       item.innerHTML = `
-        <div><strong>$${job.price}</strong> • ${job.scopeType}</div>
-        <div>${job.description}</div>
-        <div>Band: $${job.aiLow}–$${job.aiHigh} · Upsell: ${job.upsellPotential}%</div>
+        <div><strong>$${job.price ?? "—"}</strong> • ${job.scopeType ?? "snapshot"}</div>
+        <div>${job.description ?? ""}</div>
+        <div>
+          <span class="label">Band:</span>
+          ${
+            aiLow && aiHigh
+              ? `$${aiLow}–$${aiHigh}`
+              : "pending"
+          }
+        </div>
       `;
       jobsList.appendChild(item);
     });
   } catch (e) {
-    console.error(e);
+    console.warn("Could not load existing jobs", e);
   }
 })();
