@@ -6,24 +6,27 @@
     name="viewport"
     content="width=device-width,initial-scale=1,viewport-fit=cover"
   />
-  <title>WorkAI • Snap the job. Know your worth.</title>
+  <title>WorkAI • Work Hub & Ticket Deck</title>
   <meta
     name="description"
-    content="WorkAI is a live-in-public tool for solo operators. Snap real jobs, speak your scope, and get a smart pricing band without selling your soul."
+    content="WorkAI Hub — your ticket deck for real jobs: snaps, smart bands, notes, routes, and receipts in one lightweight workspace."
   />
   <style>
     :root {
-      --bg: #f9fafb;
+      --bg: #f3f4f6;
       --panel: #ffffff;
       --accent: #22c55e;
-      --accent-soft: rgba(34, 197, 94, 0.14);
+      --accent-soft: rgba(34,197,94,0.14);
       --accent-alt: #38bdf8;
       --text: #020817;
       --muted: #6b7280;
-      --border: rgba(148, 163, 253, 0.16);
-      --shadow-soft: 0 10px 26px rgba(15, 23, 42, 0.1);
-      --tape-bg-1: #111827;
-      --tape-bg-2: #facc15;
+      --border-soft: #e5e7eb;
+      --border-strong: rgba(148,163,253,0.36);
+      --shadow-soft: 0 12px 28px rgba(15,23,42,0.12);
+      --radius-shell: 22px;
+      --radius-card: 14px;
+      --font-xs: 9px;
+      --font-xxs: 8px;
     }
 
     [data-theme="dark"] {
@@ -31,10 +34,9 @@
       --panel: #020817;
       --text: #e5e7eb;
       --muted: #9ca3af;
-      --border: rgba(75, 85, 99, 0.9);
-      --shadow-soft: 0 24px 60px rgba(0, 0, 0, 0.9);
-      --tape-bg-1: #111827;
-      --tape-bg-2: #facc15;
+      --border-soft: #111827;
+      --border-strong: rgba(75,85,99,0.9);
+      --shadow-soft: 0 24px 70px rgba(0,0,0,0.95);
     }
 
     * {
@@ -46,41 +48,40 @@
     body {
       font-family: system-ui, -apple-system, BlinkMacSystemFont, -sans-serif;
       min-height: 100vh;
-      display: flex;
-      justify-content: center;
-      padding: 18px 10px 22px;
       background:
-        radial-gradient(circle at top left, rgba(34, 197, 94, 0.10), transparent 55%),
-        radial-gradient(circle at top right, rgba(56, 189, 248, 0.06), transparent 55%),
+        radial-gradient(circle at top left, rgba(34,197,94,0.08), transparent 55%),
+        radial-gradient(circle at top right, rgba(56,189,248,0.05), transparent 55%),
         var(--bg);
       color: var(--text);
-      transition: background 0.25s ease, color 0.25s ease;
+      display: flex;
+      justify-content: center;
+      padding: 18px 8px 22px;
+      transition: background .25s ease, color .25s ease;
     }
 
-    .shell {
+    .hub-shell {
       width: 100%;
-      max-width: 960px;
-      margin: auto;
-      padding: 16px 12px 14px;
-      border-radius: 22px;
-      border: 1px solid var(--border);
-      background: radial-gradient(circle at top, rgba(255, 255, 255, 0.06), transparent 78%) var(--panel);
+      max-width: 1080px;
+      padding: 14px 10px 12px;
+      border-radius: var(--radius-shell);
+      background: radial-gradient(circle at top, rgba(255,255,255,0.06), transparent 78%) var(--panel);
+      border: 1px solid var(--border-soft);
       box-shadow: var(--shadow-soft);
       display: flex;
       flex-direction: column;
-      gap: 14px;
+      gap: 10px;
     }
 
     /* HEADER */
 
-    .top-row {
+    .hub-head {
       display: flex;
       justify-content: space-between;
       align-items: center;
       gap: 8px;
     }
 
-    .brand-lockup {
+    .hub-brand {
       display: flex;
       align-items: center;
       gap: 7px;
@@ -91,12 +92,18 @@
       height: 18px;
       border-radius: 999px;
       background: radial-gradient(circle at 30% 0, #ffffff, var(--accent));
-      box-shadow: 0 0 10px rgba(34, 197, 94, 0.9);
+      box-shadow: 0 0 10px rgba(34,197,94,0.9);
+    }
+
+    .brand-labels {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
     }
 
     .brand-text {
-      font-size: 10px;
-      letter-spacing: 0.16em;
+      font-size: 9px;
+      letter-spacing: .16em;
       text-transform: uppercase;
       color: var(--muted);
     }
@@ -106,1140 +113,534 @@
       color: var(--muted);
     }
 
+    .hub-right {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
     .live-pill {
       display: inline-flex;
       align-items: center;
-      gap: 5px;
-      padding: 3px 9px;
+      gap: 4px;
+      padding: 2px 8px;
       border-radius: 999px;
-      background: rgba(22, 163, 74, 0.06);
-      border: 1px solid rgba(22, 163, 74, 0.32);
-      font-size: 7px;
+      background: rgba(22,163,74,0.06);
+      border: 1px solid rgba(22,163,74,0.32);
+      font-size: 6.5px;
       color: #16a34a;
       text-transform: uppercase;
-      letter-spacing: 0.14em;
+      letter-spacing: .14em;
       white-space: nowrap;
     }
 
     .live-dot {
-      width: 6px;
-      height: 6px;
+      width: 5px;
+      height: 5px;
       border-radius: 999px;
       background: #22c55e;
       box-shadow: 0 0 8px #22c55e;
     }
 
-    .top-right {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .prefs-toggle-wrap {
-      position: relative;
-    }
-
-    .prefs-toggle {
-      width: 20px;
-      height: 20px;
+    .back-link {
+      font-size: 7px;
+      color: var(--muted);
+      text-decoration: none;
+      padding: 3px 6px;
       border-radius: 999px;
-      border: 1px solid var(--border);
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      border: 1px solid var(--border-soft);
+      background: rgba(255,255,255,0.9);
       cursor: pointer;
-      background: rgba(255, 255, 255, 0.98);
-      box-shadow: 0 4px 10px rgba(15, 23, 42, 0.12);
     }
 
-    [data-theme="dark"] .prefs-toggle {
+    [data-theme="dark"] .back-link {
       background: #020817;
     }
 
-    .prefs-toggle-ico {
-      width: 12px;
-      height: 8px;
-      border-radius: 999px;
-      border: 1px solid var(--accent);
-      border-top: 0;
-      position: relative;
-    }
+    /* LAYOUT GRID */
 
-    .prefs-toggle-ico::before,
-    .prefs-toggle-ico::after {
-      content: "";
-      position: absolute;
-      width: 3px;
-      height: 3px;
-      border-radius: 999px;
-      background: var(--accent);
-      top: 1px;
-      box-shadow: 0 0 6px var(--accent-soft);
-    }
-
-    .prefs-toggle-ico::before {
-      left: 2px;
-    }
-
-    .prefs-toggle-ico::after {
-      right: 2px;
-    }
-
-    .prefs-panel {
-      position: absolute;
-      top: 26px;
-      right: 0;
-      width: 180px;
-      padding: 8px 8px 7px;
-      border-radius: 14px;
-      border: 1px solid var(--border);
-      background: rgba(8, 12, 16, 0.98);
-      color: #e5e7eb;
-      font-size: 8px;
-      display: none;
-      flex-direction: column;
-      gap: 4px;
-      box-shadow: 0 14px 32px rgba(0, 0, 0, 0.6);
-      z-index: 40;
-    }
-
-    .prefs-panel.active {
-      display: flex;
-    }
-
-    .prefs-label {
-      text-transform: uppercase;
-      letter-spacing: 0.14em;
-      font-size: 6px;
-      color: #9ca3af;
-    }
-
-    .prefs-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 6px;
-    }
-
-    .prefs-pill {
-      padding: 2px 6px;
-      border-radius: 999px;
-      border: 1px solid rgba(148, 163, 253, 0.42);
-      cursor: pointer;
-      white-space: nowrap;
-    }
-
-    .prefs-pill.active {
-      background: var(--accent);
-      color: #020817;
-      border-color: transparent;
-      box-shadow: 0 0 10px rgba(34, 197, 94, 0.7);
-    }
-
-    .prefs-btn {
-      border-radius: 8px;
-      padding: 3px 5px;
-      border: 1px solid rgba(75, 85, 99, 0.9);
-      cursor: pointer;
-      text-align: center;
-      margin-top: 2px;
-    }
-
-    /* GRID LAYOUT */
-
-    .grid {
+    .hub-grid {
       display: grid;
-      grid-template-columns: minmax(0, 1.9fr) minmax(230px, 1.4fr);
-      gap: 14px;
-      align-items: stretch;
+      grid-template-columns: minmax(0, 1.9fr) minmax(240px, 1.4fr);
+      gap: 9px;
+      margin-top: 4px;
     }
 
-    @media (max-width: 720px) {
-      .shell {
-        padding: 14px 10px 12px;
-        border-radius: 18px;
-      }
-
-      .grid {
+    @media (max-width: 800px) {
+      .hub-grid {
         grid-template-columns: 1fr;
       }
     }
 
-    /* LEFT COLUMN */
+    /* LEFT COLUMN: TICKET DECK */
 
-    .hero-title {
-      font-size: 20px;
-      line-height: 1.25;
-      font-weight: 600;
-      margin-bottom: 4px;
-    }
-
-    .hero-highlight {
-      color: var(--accent);
-      font-weight: 600;
-    }
-
-    .hero-body {
-      font-size: 9px;
-      color: var(--muted);
-      max-width: 360px;
-      margin-bottom: 8px;
-    }
-
-    .cta-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      align-items: center;
-      margin-bottom: 6px;
-    }
-
-    .camera-orb-wrap {
+    .card {
+      background: rgba(255,255,255,0.98);
+      border-radius: var(--radius-card);
+      border: 1px solid var(--border-soft);
+      padding: 8px 8px 7px;
       display: flex;
       flex-direction: column;
-      gap: 3px;
-    }
-
-    .camera-orb-label {
-      font-size: 7.5px;
-      color: var(--muted);
-    }
-
-    .camera-orb-row {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .camera-orb {
-      width: 60px;
-      height: 60px;
-      border-radius: 999px;
-      background: radial-gradient(circle at 30% 0, #ffffff, var(--accent));
-      box-shadow:
-        0 9px 22px rgba(15, 23, 42, 0.22),
-        0 0 18px rgba(34, 197, 94, 0.95);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      transition: all 0.16s ease;
-      position: relative;
-    }
-
-    .camera-orb-inner {
-      width: 24px;
-      height: 24px;
-      border-radius: 999px;
-      border: 2px solid #020817;
-      box-shadow: inset 0 0 6px rgba(15, 23, 42, 0.16);
-    }
-
-    .camera-orb-ring {
-      position: absolute;
-      width: 40px;
-      height: 40px;
-      border-radius: 999px;
-      border: 1px dashed rgba(34, 197, 94, 0.55);
-      box-shadow: 0 0 10px rgba(34, 197, 94, 0.35);
-      opacity: 0.7;
-    }
-
-    .camera-orb:hover {
-      transform: translateY(-1px);
-      box-shadow:
-        0 12px 30px rgba(15, 23, 42, 0.3),
-        0 0 22px rgba(34, 197, 94, 1);
-    }
-
-    .btn-upload {
-      padding: 7px 11px;
-      border-radius: 999px;
-      border: 1px solid var(--border);
-      font-size: 8px;
-      display: inline-flex;
-      align-items: center;
       gap: 6px;
-      background: #ffffff;
-      color: var(--muted);
-      cursor: pointer;
-      white-space: nowrap;
+      font-size: var(--font-xxs);
     }
 
-    [data-theme="dark"] .btn-upload {
+    [data-theme="dark"] .card {
       background: #020817;
-      color: var(--muted);
+      border-color: var(--border-strong);
     }
 
-    .btn-upload-dot {
-      width: 7px;
-      height: 7px;
-      border-radius: 999px;
-      border: 1px solid var(--accent);
-      box-shadow: 0 0 6px var(--accent-soft);
-    }
-
-    .microcopy {
-      font-size: 7px;
-      color: var(--muted);
-    }
-
-    /* RIGHT COLUMN: PREVIEW + TAPE */
-
-    .right-panel {
-      padding: 9px 8px 7px;
-      border-radius: 16px;
-      border: 1px solid var(--border);
-      background:
-        radial-gradient(circle at top, var(--accent-soft), transparent 80%)
-        var(--panel);
+    .card-header {
       display: flex;
-      flex-direction: column;
-      gap: 6px;
-      font-size: 7px;
-      color: #4b5563;
-    }
-
-    [data-theme="dark"] .right-panel {
-      background:
-        radial-gradient(circle at top, rgba(34, 197, 94, 0.12), transparent 80%)
-        #020817;
-      color: var(--muted);
-    }
-
-    .rp-label {
-      font-size: 6px;
-      text-transform: uppercase;
-      letter-spacing: 0.16em;
-      color: #9ca3af;
-    }
-
-    .rp-title {
-      font-size: 10px;
-      font-weight: 600;
-    }
-
-    .rp-pillrow {
-      display: flex;
-      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: baseline;
       gap: 4px;
-      margin-top: 2px;
     }
 
-    .rp-pill {
-      padding: 3px 6px;
-      border-radius: 999px;
-      border: 1px solid rgba(148, 163, 253, 0.26);
-      background: rgba(255, 255, 255, 0.98);
-      color: var(--muted);
-      font-size: 6.5px;
-      white-space: nowrap;
-    }
-
-    [data-theme="dark"] .rp-pill {
-      background: rgba(2, 8, 23, 0.98);
-    }
-
-    .fake-screen {
-      margin-top: 3px;
-      padding: 6px;
-      border-radius: 10px;
-      background: #f9fafb;
-      border: 1px solid #e5e7eb;
-      display: flex;
-      flex-direction: column;
-      gap: 3px;
-    }
-
-    [data-theme="dark"] .fake-screen {
-      background: #020817;
-      border-color: #374151;
-    }
-
-    .fake-label {
-      font-size: 5.5px;
-      text-transform: uppercase;
-      letter-spacing: 0.14em;
-      color: var(--accent);
-    }
-
-    .fake-row {
-      display: flex;
-      justify-content: space-between;
-      gap: 6px;
-      align-items: center;
-    }
-
-    .fake-tag {
-      padding: 2px 5px;
-      border-radius: 999px;
-      border: 1px solid rgba(148, 163, 253, 0.4);
-      font-size: 5.5px;
-      color: #6b7280;
-      white-space: nowrap;
-    }
-
-    [data-theme="dark"] .fake-tag {
-      color: var(--muted);
-      border-color: rgba(148, 163, 253, 0.3);
-    }
-
-    .tape-wrap {
-      margin-top: 4px;
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
-    }
-
-    .tape-label {
-      font-size: 5.5px;
-      letter-spacing: 0.16em;
-      text-transform: uppercase;
-      color: #f97316;
-    }
-
-    .tape-bar {
-      width: 100%;
-      padding: 4px 0;
-      border-radius: 10px;
-      background-image:
-        repeating-linear-gradient(
-          -45deg,
-          var(--tape-bg-2) 0 10px,
-          var(--tape-bg-1) 10px 20px
-        );
-      box-shadow: 0 6px 14px rgba(15, 23, 42, 0.35);
-      border: 1px solid #111827;
-    }
-
-    .tape-glow-text {
-      margin-top: 1px;
-      font-size: 5.5px;
-      text-transform: uppercase;
-      letter-spacing: 0.14em;
-      color: #111827;
-      text-shadow:
-        0 0 4px rgba(250, 204, 21, 0.9),
-        0 0 8px rgba(250, 204, 21, 0.7);
-    }
-
-    [data-theme="dark"] .tape-glow-text {
-      color: #fef9c3;
-    }
-
-    /* OVERLAYS / MODALS */
-
-    .overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(6, 8, 10, 0.66);
-      display: none;
-      align-items: center;
-      justify-content: center;
-      z-index: 60;
-    }
-
-    .overlay.active {
-      display: flex;
-    }
-
-    .modal {
-      width: 100%;
-      max-width: 420px;
-      max-height: 90vh;
-      background: #020817;
-      color: #e5e7eb;
-      border-radius: 18px;
-      padding: 12px 11px 10px;
-      border: 1px solid rgba(148, 163, 253, 0.4);
-      box-shadow: 0 18px 44px rgba(0, 0, 0, 0.9);
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      overflow-y: auto;
-    }
-
-    .modal-head {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .modal-title {
-      font-size: 10px;
+    .card-title {
+      font-size: 9px;
       font-weight: 600;
       text-transform: uppercase;
-      letter-spacing: 0.14em;
-      color: #22c55e;
+      letter-spacing: .12em;
+      color: var(--muted);
     }
 
-    .modal-close {
-      width: 16px;
-      height: 16px;
+    .card-sub {
+      font-size: 7px;
+      color: var(--muted);
+    }
+
+    .pill-soft {
+      padding: 2px 6px;
       border-radius: 999px;
-      border: 1px solid rgba(148, 163, 253, 0.7);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 9px;
-      cursor: pointer;
-      color: #9ca3af;
+      border: 1px solid var(--border-soft);
+      font-size: 6.5px;
+      color: var(--muted);
+      white-space: nowrap;
     }
 
-    .modal-body {
-      font-size: 8px;
-      color: #9ca3af;
+    .capture-row {
       display: flex;
-      flex-direction: column;
       gap: 6px;
+      align-items: center;
+      flex-wrap: wrap;
     }
 
-    .calib-img {
-      width: 100%;
-      border-radius: 10px;
-      border: 1px solid rgba(75, 85, 99, 0.9);
-      background:
-        linear-gradient(
-          135deg,
-          rgba(34, 197, 94, 0.14),
-          rgba(15, 23, 42, 0.96)
-        );
-      aspect-ratio: 4/3;
-      display: flex;
-      align-items: flex-end;
-      justify-content: flex-start;
-      padding: 6px;
-      color: #e5e7eb;
-      font-size: 7px;
-    }
-
-    .modal-label {
-      font-size: 7px;
-      text-transform: uppercase;
-      letter-spacing: 0.12em;
-      color: #9ca3af;
-    }
-
-    .modal-input {
-      width: 100%;
-      margin-top: 2px;
-      padding: 5px 7px;
-      border-radius: 8px;
-      border: 1px solid rgba(148, 163, 253, 0.6);
-      font-size: 8px;
-      background: #020817;
-      color: #e5e7eb;
-      outline: none;
-    }
-
-    .modal-input::placeholder {
-      color: #6b7280;
-    }
-
-    .modal-note {
-      font-size: 7px;
-      color: #6b7280;
-    }
-
-    .modal-btn {
-      margin-top: 4px;
-      padding: 6px 9px;
+    .capture-btn {
+      flex: 1;
+      min-width: 0;
+      padding: 7px 9px;
       border-radius: 999px;
       border: none;
-      font-size: 8px;
+      background: linear-gradient(90deg, var(--accent), var(--accent-alt));
+      color: #020817;
       font-weight: 600;
+      font-size: 8px;
       cursor: pointer;
-      background: linear-gradient(90deg, #22c55e, #38bdf8);
-      color: #020817;
       display: inline-flex;
       align-items: center;
-      gap: 5px;
-      align-self: flex-start;
+      justify-content: center;
+      gap: 6px;
+      box-shadow: 0 8px 16px rgba(15,23,42,0.28);
     }
 
-    .modal-step-label {
+    .capture-label {
       font-size: 7px;
-      color: #22c55e;
-      text-transform: uppercase;
-      letter-spacing: 0.12em;
-      margin-top: 4px;
-    }
-
-    .option-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 5px;
-      margin-top: 2px;
-    }
-
-    .option-pill {
-      padding: 4px 7px;
-      border-radius: 999px;
-      border: 1px solid rgba(148, 163, 253, 0.7);
-      font-size: 7px;
-      cursor: pointer;
-      color: #9ca3af;
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-    }
-
-    .option-pill.active {
-      background: #22c55e;
-      border-color: transparent;
-      color: #020817;
-      box-shadow: 0 0 12px rgba(34, 197, 94, 0.9);
+      color: var(--muted);
+      flex: 1 1 100%;
     }
 
     .thumb-strip {
       display: flex;
       gap: 4px;
-      margin-top: 4px;
       overflow-x: auto;
+      padding: 2px 0 1px;
     }
 
-    .thumb-strip img,
-    .thumb-strip video {
-      height: 42px;
-      border-radius: 7px;
+    .thumb {
+      height: 52px;
+      border-radius: 8px;
+      border: 1px solid var(--border-soft);
       object-fit: cover;
       flex-shrink: 0;
-      border: 1px solid rgba(75, 85, 99, 0.8);
     }
 
-    .modal-continue {
-      margin-top: 6px;
-      width: 100%;
-      padding: 6px 9px;
-      border-radius: 9px;
-      border: 1px solid rgba(148, 163, 253, 0.7);
-      background: #111827;
-      color: #e5e7eb;
-      font-size: 8px;
-      cursor: pointer;
+    .field {
       display: flex;
+      flex-direction: column;
+      gap: 2px;
+      margin-top: 3px;
+    }
+
+    .field label {
+      font-size: 7px;
+      color: var(--muted);
+    }
+
+    .field input,
+    .field select {
+      padding: 5px 7px;
+      border-radius: 8px;
+      border: 1px solid var(--border-soft);
+      font-size: 8px;
+      color: var(--text);
+      background: rgba(249,250,251,0.98);
+      outline: none;
+    }
+
+    [data-theme="dark"] .field input,
+    [data-theme="dark"] .field select {
+      background: #020817;
+      border-color: var(--border-strong);
+      color: var(--text);
+    }
+
+    .submit-btn {
+      margin-top: 5px;
+      padding: 6px 9px;
+      border-radius: 999px;
+      border: none;
+      background: #111827;
+      color: #f9fafb;
+      font-size: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
       align-items: center;
-      justify-content: center;
       gap: 6px;
     }
 
-    .modal-continue.primary {
-      background: linear-gradient(90deg, #22c55e, #38bdf8);
-      color: #020817;
-      border-color: transparent;
-      font-weight: 600;
+    .submit-btn span {
+      font-size: 9px;
     }
 
-    .hidden-input {
+    .report-box {
+      margin-top: 5px;
+      padding: 7px 8px;
+      border-radius: 10px;
+      border: 1px solid var(--border-soft);
+      background: rgba(249,250,251,0.98);
+      font-size: 8px;
       display: none;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    [data-theme="dark"] .report-box {
+      background: #020817;
+      border-color: var(--border-strong);
+    }
+
+    .report-label {
+      font-size: 6.5px;
+      text-transform: uppercase;
+      letter-spacing: .14em;
+      color: var(--muted);
+    }
+
+    .jobs-list {
+      margin-top: 6px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      font-size: 7px;
+    }
+
+    .job-item {
+      padding: 5px 6px;
+      border-radius: 8px;
+      border: 1px solid var(--border-soft);
+      background: rgba(255,255,255,0.98);
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    [data-theme="dark"] .job-item {
+      background: #020817;
+      border-color: var(--border-strong);
+    }
+
+    .job-item span.label {
+      font-size: 6px;
+      color: var(--muted);
+    }
+
+    /* RIGHT COLUMN: MODULES / PLACEHOLDERS */
+
+    .stack {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .stack-title {
+      font-size: 7px;
+      text-transform: uppercase;
+      letter-spacing: .14em;
+      color: var(--muted);
+    }
+
+    .module-card {
+      background: rgba(255,255,255,0.98);
+      border-radius: var(--radius-card);
+      border: 1px solid var(--border-soft);
+      padding: 6px 7px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      font-size: 7px;
+    }
+
+    [data-theme="dark"] .module-card {
+      background: #020817;
+      border-color: var(--border-strong);
+    }
+
+    .module-label {
+      font-size: 6.5px;
+      text-transform: uppercase;
+      letter-spacing: .12em;
+      color: var(--muted);
+    }
+
+    .module-line {
+      font-size: 7px;
+      color: var(--muted);
+      display: flex;
+      justify-content: space-between;
+      gap: 6px;
+    }
+
+    .tag {
+      display: inline-flex;
+      padding: 2px 5px;
+      border-radius: 999px;
+      border: 1px solid var(--border-soft);
+      font-size: 6px;
+      color: var(--muted);
+      gap: 4px;
+      align-items: center;
+      white-space: nowrap;
+    }
+
+    .dot {
+      width: 4px;
+      height: 4px;
+      border-radius: 999px;
+      background: var(--accent);
+    }
+
+    .map-box {
+      margin-top: 3px;
+      padding: 5px;
+      border-radius: 9px;
+      border: 1px dashed var(--border-soft);
+      font-size: 6.5px;
+      color: var(--muted);
+      text-align: left;
+    }
+
+    .linkish {
+      font-size: 6.5px;
+      color: var(--accent);
+      text-decoration: none;
+      cursor: pointer;
     }
   </style>
 </head>
 <body data-theme="light">
-  <main class="shell">
+  <main class="hub-shell">
     <!-- HEADER -->
-    <div class="top-row">
-      <div class="brand-lockup">
+    <header class="hub-head">
+      <div class="hub-brand">
         <div class="brand-orb"></div>
-        <div>
-          <div class="brand-text">WorkAI</div>
-          <div class="brand-sub">For the independent boss. Not the boardroom.</div>
+        <div class="brand-labels">
+          <div class="brand-text">WorkAI Hub</div>
+          <div class="brand-sub">Ticket deck for independent operators</div>
         </div>
       </div>
-      <div class="top-right">
+      <div class="hub-right">
         <div class="live-pill">
           <div class="live-dot"></div>
-          Building in public · alpha
+          Live backend · still alpha
         </div>
-        <div class="prefs-toggle-wrap">
-          <div class="prefs-toggle" id="prefsToggle">
-            <div class="prefs-toggle-ico"></div>
-          </div>
-          <div class="prefs-panel" id="prefsPanel">
-            <div class="prefs-label">View</div>
-            <div class="prefs-row">
-              <div class="prefs-pill" data-theme-choice="light">Light</div>
-              <div class="prefs-pill" data-theme-choice="dark">Dark</div>
-            </div>
-            <div class="prefs-label">Accent</div>
-            <div class="prefs-row">
-              <div class="prefs-pill" data-accent-choice="green">Green</div>
-              <div class="prefs-pill" data-accent-choice="blue">Blue</div>
-            </div>
-            <div class="prefs-label">Language</div>
-            <div class="prefs-row">
-              <div class="prefs-pill" data-lang-choice="en">EN</div>
-              <div class="prefs-pill" data-lang-choice="es">ES</div>
-            </div>
-            <div class="prefs-btn" id="fsToggle">Toggle fullscreen</div>
-          </div>
-        </div>
+        <a href="index.html" class="back-link">← Front door</a>
       </div>
-    </div>
+    </header>
 
-    <!-- MAIN GRID -->
-    <section class="grid">
-      <!-- LEFT: HERO + CONTROLS -->
-      <div>
-        <h1 class="hero-title" data-i18n-key="heroTitle">
-          Upload your work. <span class="hero-highlight">Know your worth.</span>
-        </h1>
-        <p class="hero-body" data-i18n-key="heroBody">
-          Drop in as you are. One example job to calibrate your lane, then every new job is
-          snap → speak → Smart Band. No sign-up wall in alpha.
-        </p>
-
-        <div class="cta-row">
-          <div class="camera-orb-wrap">
-            <div class="camera-orb-row">
-              <div class="camera-orb" id="btnCamera">
-                <div class="camera-orb-ring"></div>
-                <div class="camera-orb-inner"></div>
-              </div>
-              <button class="btn-upload" id="btnUpload">
-                <span class="btn-upload-dot"></span>
-                Use photos from my library
-              </button>
-            </div>
-            <div class="camera-orb-label">
-              One button. We’ll calibrate you on a sample job, then let you snap or upload
-              your own. No photos stay here until you send.
+    <!-- GRID -->
+    <section class="hub-grid">
+      <!-- LEFT: CORE TICKET DECK -->
+      <section class="card" id="ticketDeck">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Smart Ticket Deck</div>
+            <div class="card-sub">
+              Snap / upload → Band → Screenshot-safe readout.
             </div>
           </div>
-        </div>
-
-        <div class="microcopy" data-i18n-key="microcopy">
-          First hit: we run an Initial Dynamic Expectation Calibration using our own sample job.
-          That’s our quiet sauce. Then your jobs, your voice, your lane.
-        </div>
-      </div>
-
-      <!-- RIGHT: PREVIEW CARD + CONSTRUCTION TAPE -->
-      <aside class="right-panel">
-        <div class="rp-label">Smart Report preview</div>
-        <div class="rp-title">WorkAI Ticket Deck</div>
-        <div class="rp-pillrow">
-          <div class="rp-pill">Built for single-truck & small crews</div>
-          <div class="rp-pill">Photo / walkaround ready</div>
-          <div class="rp-pill">No coupons. No race-to-bottom.</div>
-        </div>
-
-        <div class="fake-screen">
-          <div class="fake-label">Sample read (alpha)</div>
-          <div class="fake-row">
-            <span>Mulch + edge · 1 crew</span>
-            <span class="fake-tag">You input: $480</span>
-          </div>
-          <div class="fake-row">
-            <span>Band:</span>
-            <strong>$450 – $525</strong>
-          </div>
-          <div class="fake-row">
-            <span>Signal:</span>
-            <span>In lane. Don’t apologize, don’t discount.</span>
-          </div>
-          <div class="fake-row">
-            <span>Upsell window:</span>
-            <span>+10–18% w/ haul-away & sharp outline.</span>
+          <div class="pill-soft">
+            v1 • button → capture → band
           </div>
         </div>
 
-        <div class="tape-wrap">
-          <div class="tape-label">alpha zone</div>
-          <div class="tape-bar"></div>
-          <div class="tape-glow-text">
-            UNDER CONSTRUCTION • REAL BACKEND • TRY TO BREAK IT FOR US
-          </div>
+        <!-- Capture row -->
+        <div class="capture-row">
+          <button id="captureJobBtn" class="capture-btn">
+            📸 Add job from camera / library
+          </button>
         </div>
+        <div class="capture-label">
+          Start with one clear photo (or short video walkaround). We’ll use your voice & history later.
+        </div>
+
+        <!-- Hidden input used by JS -->
+        <input
+          id="mediaInput"
+          type="file"
+          accept="image/*,video/*"
+          multiple
+          style="display:none"
+        />
+
+        <!-- Thumbnails from landing & new capture -->
+        <div id="thumbStrip" class="thumb-strip"></div>
+
+        <!-- Price / description / scope -->
+        <div class="field">
+          <label for="priceInput">What did you charge for this job? (USD)</label>
+          <input id="priceInput" type="number" placeholder="e.g. 480" />
+        </div>
+
+        <div class="field">
+          <label for="descInput">Quick description (what’s the work?)</label>
+          <input
+            id="descInput"
+            type="text"
+            placeholder="Mulch + edge front beds, haul-away included"
+          />
+        </div>
+
+        <div class="field">
+          <label for="scopeType">Scope type</label>
+          <select id="scopeType">
+            <option value="snapshot">Snapshot · fits in one frame</option>
+            <option value="walkaround">Walkaround · talk while you walk</option>
+          </select>
+        </div>
+
+        <!-- Smart Report trigger -->
+        <button id="smartReportBtn" class="submit-btn">
+          Get Smart Band & field note <span>↗</span>
+        </button>
+
+        <!-- Smart Report display -->
+        <div id="smartReport" class="report-box">
+          <div class="report-label">Smart report</div>
+          <div><strong>Band:</strong> <!-- $low – $high here --></div>
+          <div><strong>Upsell:</strong> <!-- % here --></div>
+          <div><strong>Read:</strong> <!-- notes here --></div>
+        </div>
+
+        <!-- Recent jobs (populated by JS from backend) -->
+        <div class="jobs-list" id="jobsList">
+          <!-- Filled by main.js / backend -->
+        </div>
+      </section>
+
+      <!-- RIGHT: WORKFLOW MODULES / PLACEHOLDERS -->
+      <aside class="stack">
+        <div class="stack-title">Workflow modules (placeholders wired for later)</div>
+
+        <!-- Portfolio / Jobs Archive -->
+        <section class="module-card" id="portfolioModule">
+          <div class="module-label">Job portfolio</div>
+          <div class="module-line">
+            <span>Recent smart tickets saved as your proof & playbook.</span>
+          </div>
+          <div class="module-line">
+            <span class="tag"><span class="dot"></span> /api/jobs/list</span>
+            <span class="linkish" data-hook="portfolio-view-all">View all (soon)</span>
+          </div>
+          <div id="portfolioList">
+            <!-- future: compact cards of best jobs; hook to same jobs dataset -->
+          </div>
+        </section>
+
+        <!-- Activity / Logs -->
+        <section class="module-card" id="logsModule">
+          <div class="module-label">Activity log</div>
+          <div class="module-line">
+            <span>Lightweight run history. Keeps receipts of what AI suggested.</span>
+          </div>
+          <div id="activityLog">
+            <!-- future: append every Smart Report call -->
+            <div class="module-line">
+              <span>Placeholder:</span>
+              <span>“When live, each run shows here.”</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- Contacts -->
+        <section class="module-card" id="contactsModule">
+          <div class="module-label">Contacts</div>
+          <div class="module-line">
+            <span>Future hook for homeowner names, numbers & repeat jobs.</span>
+          </div>
+          <div class="module-line">
+            <span class="tag"><span class="dot"></span> contacts_table</span>
+            <span class="linkish" data-hook="add-contact">+ Add (later)</span>
+          </div>
+          <div id="contactList">
+            <!-- future: list mapped to jobs -->
+          </div>
+        </section>
+
+        <!-- Route Manager -->
+        <section class="module-card" id="routeModule">
+          <div class="module-label">Route manager</div>
+          <div class="module-line">
+            <span>Simple lane for “today’s stops” once we plug in maps.</span>
+          </div>
+          <div class="map-box" id="routeManager">
+            Placeholder: use job addresses to build an optimized route.
+            <br />
+            Hook target: <code>GET /routes</code> or map SDK.
+          </div>
+        </section>
+
+        <!-- Map / Territory -->
+        <section class="module-card" id="mapModule">
+          <div class="module-label">Map & zones</div>
+          <div class="map-box" id="mapPanel">
+            Placeholder mini-map panel. Tie into Google Maps / Mapbox later.
+            <br />
+            Use this for showing service areas, “hot streets”, and drive time.
+          </div>
+        </section>
+
+        <!-- Notes / Playbook -->
+        <section class="module-card" id="notesModule">
+          <div class="module-label">Playbook & notes</div>
+          <div class="module-line">
+            <span>A lane for scripts, replies, job phrases that fit this operator.</span>
+          </div>
+          <div id="notesFeed">
+            <!-- future: AI-generated phrasing, saved scripts per job type -->
+            <div class="module-line">
+              <span>Placeholder:</span>
+              <span>“Lock lines that feel like you, not a SaaS mascot.”</span>
+            </div>
+          </div>
+        </section>
       </aside>
     </section>
   </main>
 
-  <!-- HIDDEN INPUTS FOR MEDIA -->
-  <input
-    id="cameraInput"
-    class="hidden-input"
-    type="file"
-    accept="image/*,video/*"
-    capture="environment"
-    multiple
-  />
-  <input
-    id="libraryInput"
-    class="hidden-input"
-    type="file"
-    accept="image/*,video/*"
-    multiple
-  />
-
-  <!-- CALIBRATION / FLOW MODAL -->
-  <div class="overlay" id="flowOverlay">
-    <div class="modal" id="flowModal">
-      <div class="modal-head">
-        <div class="modal-title">
-          Initial Expectation Calibration
-        </div>
-        <div class="modal-close" id="modalClose">✕</div>
-      </div>
-
-      <div class="modal-body" id="modalStep1">
-        <div class="calib-img">
-          <!-- This should be replaced with a real static example later -->
-          Sample job: clean beds, fresh mulch, light trim, haul-away.
-        </div>
-        <div class="modal-label">
-          Before we read your jobs:
-        </div>
-        <div>
-          Look at this example. In your lane, no overthinking:
-          <strong>What would you charge for this job?</strong>
-        </div>
-        <input
-          id="calibInput"
-          class="modal-input"
-          type="number"
-          min="0"
-          placeholder="$ what you’d quote this for"
-        />
-        <div class="modal-note">
-          We use this once as a private benchmark to understand your expectation range.
-          It’s not shown to anyone. It just keeps us from acting dumb or getting trolled.
-        </div>
-        <button class="modal-btn" id="calibSubmit">
-          Lock it in
-          <span>↗</span>
-        </button>
-      </div>
-
-      <div class="modal-body" id="modalStep2" style="display:none;">
-        <div class="modal-step-label">
-          Step 2 · Capture your real job
-        </div>
-        <div>
-          Now grab your actual job:
-        </div>
-        <div class="option-row">
-          <div class="option-pill" data-mode="camera">
-            Live camera
-            <span style="width:5px;height:5px;border-radius:999px;background:#22c55e;"></span>
-          </div>
-          <div class="option-pill" data-mode="upload">
-            From your library
-          </div>
-        </div>
-        <div class="modal-note">
-          Video / walkaround: <strong>talk while you walk</strong> — “two downspouts here,
-          mulch this bed, one new tree there.”<br />
-          Photo: <strong>fit the whole job</strong> in frame when you can.
-        </div>
-        <div class="thumb-strip" id="thumbStrip"></div>
-        <button class="modal-continue" id="pickMediaBtn">
-          Choose capture method above to start
-        </button>
-        <button class="modal-continue primary" id="goHubBtn" style="display:none;">
-          Continue to Work Hub
-          <span>➜</span>
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <script>
-    (function () {
-      const root = document.documentElement;
-      const body = document.body;
-
-      /* PREFS PANEL */
-      const prefsToggle = document.getElementById("prefsToggle");
-      const prefsPanel = document.getElementById("prefsPanel");
-      const fsToggle = document.getElementById("fsToggle");
-
-      function setTheme(theme) {
-        body.setAttribute("data-theme", theme);
-        localStorage.setItem("workai-theme", theme);
-        document
-          .querySelectorAll("[data-theme-choice]")
-          .forEach((el) => el.classList.toggle("active", el.dataset.themeChoice === theme));
-      }
-
-      function setAccent(accentKey) {
-        const color = accentKey === "blue" ? getComputedStyle(root).getPropertyValue("--accent-alt") || "#38bdf8" : "#22c55e";
-        root.style.setProperty("--accent", color.trim() || "#22c55e");
-        localStorage.setItem("workai-accent", accentKey);
-        document
-          .querySelectorAll("[data-accent-choice]")
-          .forEach((el) => el.classList.toggle("active", el.dataset.accentChoice === accentKey));
-      }
-
-      function setLang(lang) {
-        localStorage.setItem("workai-lang", lang);
-        document
-          .querySelectorAll("[data-lang-choice]")
-          .forEach((el) => el.classList.toggle("active", el.dataset.langChoice === lang));
-
-        const map = {
-          en: {
-            heroTitle: "Upload your work. <span class=\"hero-highlight\">Know your worth.</span>",
-            heroBody:
-              "Drop in as you are. One example job to calibrate your lane, then every new job is snap → speak → Smart Band. No sign-up wall in alpha.",
-            microcopy:
-              "First hit: we run an Initial Dynamic Expectation Calibration using our own sample job. That’s part of our sauce. Then your jobs, your voice, your lane."
-          },
-          es: {
-            heroTitle:
-              "Sube tu trabajo. <span class=\"hero-highlight\">Conoce tu valor.</span>",
-            heroBody:
-              "Entras como eres. Un trabajo de ejemplo para calibrar tu rango, luego cada nuevo trabajo es foto → voz → banda inteligente. Sin registro en alpha.",
-            microcopy:
-              "Primero: hacemos una Calibración Inicial de Expectativas con nuestro propio trabajo ejemplo. Es parte de nuestra fórmula. Luego tus trabajos, tu voz, tu carril."
-          }
-        };
-
-        const t = map[lang] || map.en;
-        const heroTitle = document.querySelector("[data-i18n-key='heroTitle']");
-        const heroBody = document.querySelector("[data-i18n-key='heroBody']");
-        const micro = document.querySelector("[data-i18n-key='microcopy']");
-        if (heroTitle) heroTitle.innerHTML = t.heroTitle;
-        if (heroBody) heroBody.textContent = t.heroBody;
-        if (micro) micro.textContent = t.microcopy;
-      }
-
-      // Load saved prefs
-      const savedTheme = localStorage.getItem("workai-theme") || "light";
-      const savedAccent = localStorage.getItem("workai-accent") || "green";
-      const savedLang = localStorage.getItem("workai-lang") || "en";
-
-      setTheme(savedTheme);
-      setAccent(savedAccent);
-      setLang(savedLang);
-
-      if (prefsToggle && prefsPanel) {
-        prefsToggle.addEventListener("click", () => {
-          prefsPanel.classList.toggle("active");
-        });
-
-        document.addEventListener("click", (e) => {
-          if (
-            !prefsPanel.contains(e.target) &&
-            !prefsToggle.contains(e.target)
-          ) {
-            prefsPanel.classList.remove("active");
-          }
-        });
-      }
-
-      document
-        .querySelectorAll("[data-theme-choice]")
-        .forEach((el) =>
-          el.addEventListener("click", () => setTheme(el.dataset.themeChoice))
-        );
-
-      document
-        .querySelectorAll("[data-accent-choice]")
-        .forEach((el) =>
-          el.addEventListener("click", () => setAccent(el.dataset.accentChoice))
-        );
-
-      document
-        .querySelectorAll("[data-lang-choice]")
-        .forEach((el) =>
-          el.addEventListener("click", () => setLang(el.dataset.langChoice))
-        );
-
-      if (fsToggle) {
-        fsToggle.addEventListener("click", () => {
-          if (!document.fullscreenElement) {
-            document.documentElement.requestFullscreen().catch(() => {});
-          } else {
-            document.exitFullscreen().catch(() => {});
-          }
-        });
-      }
-
-      /* FLOW: CALIBRATION + MEDIA + REDIRECT */
-
-      const btnCamera = document.getElementById("btnCamera");
-      const btnUpload = document.getElementById("btnUpload");
-      const flowOverlay = document.getElementById("flowOverlay");
-      const flowModal = document.getElementById("flowModal");
-      const modalClose = document.getElementById("modalClose");
-      const step1 = document.getElementById("modalStep1");
-      const step2 = document.getElementById("modalStep2");
-      const calibInput = document.getElementById("calibInput");
-      const calibSubmit = document.getElementById("calibSubmit");
-      const thumbStrip = document.getElementById("thumbStrip");
-      const pickMediaBtn = document.getElementById("pickMediaBtn");
-      const goHubBtn = document.getElementById("goHubBtn");
-      const cameraInput = document.getElementById("cameraInput");
-      const libraryInput = document.getElementById("libraryInput");
-
-      let intendedMode = null; // "camera" or "upload"
-      let pickedMode = null;
-      let selectedFiles = [];
-
-      function openFlow(mode) {
-        intendedMode = mode;
-        pickedMode = null;
-        selectedFiles = [];
-        if (thumbStrip) thumbStrip.innerHTML = "";
-        if (calibInput) calibInput.value = "";
-        step1.style.display = "flex";
-        step2.style.display = "none";
-        goHubBtn.style.display = "none";
-        pickMediaBtn.textContent = "Choose capture method above to start";
-        flowOverlay.classList.add("active");
-      }
-
-      function closeFlow() {
-        flowOverlay.classList.remove("active");
-      }
-
-      if (btnCamera) {
-        btnCamera.addEventListener("click", () => openFlow("camera"));
-      }
-      if (btnUpload) {
-        btnUpload.addEventListener("click", () => openFlow("upload"));
-      }
-
-      if (modalClose) {
-        modalClose.addEventListener("click", closeFlow);
-      }
-
-      if (calibSubmit) {
-        calibSubmit.addEventListener("click", () => {
-          const val = parseFloat(calibInput.value);
-          if (!val || val <= 0) {
-            alert("Give a real number. Gut feel. No games.");
-            return;
-          }
-          try {
-            localStorage.setItem("workai-calibration-price", String(val));
-          } catch (e) {}
-          step1.style.display = "none";
-          step2.style.display = "flex";
-
-          // Preselect intendedMode
-          document
-            .querySelectorAll(".option-pill")
-            .forEach((el) => el.classList.remove("active"));
-          if (intendedMode) {
-            const el = document.querySelector(
-              `.option-pill[data-mode="${intendedMode}"]`
-            );
-            if (el) {
-              el.classList.add("active");
-              pickedMode = intendedMode;
-              pickMediaBtn.textContent =
-                pickedMode === "camera"
-                  ? "Open camera"
-                  : "Select from library";
-            }
-          }
-        });
-      }
-
-      // Mode choice inside modal
-      document
-        .querySelectorAll(".option-pill")
-        .forEach((pill) =>
-          pill.addEventListener("click", () => {
-            document
-              .querySelectorAll(".option-pill")
-              .forEach((el) => el.classList.remove("active"));
-            pill.classList.add("active");
-            pickedMode = pill.dataset.mode;
-            pickMediaBtn.textContent =
-              pickedMode === "camera"
-                ? "Open camera"
-                : "Select from library";
-          })
-        );
-
-      // Pick media
-      if (pickMediaBtn) {
-        pickMediaBtn.addEventListener("click", () => {
-          if (!pickedMode) {
-            alert("Choose camera or library first.");
-            return;
-          }
-          if (pickedMode === "camera") {
-            cameraInput && cameraInput.click();
-          } else {
-            libraryInput && libraryInput.click();
-          }
-        });
-      }
-
-      function handleFiles(files) {
-        selectedFiles = Array.from(files || []);
-        if (!selectedFiles.length) return;
-        if (thumbStrip) thumbStrip.innerHTML = "";
-
-        selectedFiles.forEach((file) => {
-          const url = URL.createObjectURL(file);
-          const isVideo = file.type.startsWith("video/");
-          const el = document.createElement(isVideo ? "video" : "img");
-          el.src = url;
-          if (isVideo) {
-            el.muted = true;
-            el.playsInline = true;
-          }
-          thumbStrip.appendChild(el);
-        });
-
-        if (goHubBtn) {
-          goHubBtn.style.display = "flex";
-        }
-      }
-
-      if (cameraInput) {
-        cameraInput.addEventListener("change", () =>
-          handleFiles(cameraInput.files)
-        );
-      }
-      if (libraryInput) {
-        libraryInput.addEventListener("change", () =>
-          handleFiles(libraryInput.files)
-        );
-      }
-
-      // Continue to Work Hub (dashboard.html)
-      if (goHubBtn) {
-        goHubBtn.addEventListener("click", () => {
-          if (!selectedFiles.length) {
-            alert("Grab at least one photo or short video first.");
-            return;
-          }
-
-          const readers = [];
-          const dataUrls = [];
-
-          selectedFiles.forEach((file, idx) => {
-            readers[idx] = new FileReader();
-            readers[idx].onload = (ev) => {
-              dataUrls[idx] = ev.target.result;
-              if (dataUrls.filter(Boolean).length === selectedFiles.length) {
-                try {
-                  sessionStorage.setItem(
-                    "workai-initial-media-list",
-                    JSON.stringify(dataUrls)
-                  );
-                  if (dataUrls[0]) {
-                    sessionStorage.setItem(
-                      "workai-initial-media",
-                      dataUrls[0]
-                    );
-                  }
-                } catch (e) {}
-                window.location.href = "dashboard.html";
-              }
-            };
-            readers[idx].readAsDataURL(file);
-          });
-        });
-      }
-    })();
-  </script>
+  <!-- Glue script: reads session media + talks to backend
+       Make sure this file exists and matches the API_BASE + element IDs. -->
+  <script src="assets/js/main.js"></script>
 </body>
 </html>
